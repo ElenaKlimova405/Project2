@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--    <title>Getting Started: Serving Web Content</title>-->
+    <title>Блог сайта - заголовочек</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+</head>
+
+
+
+
+
+
+
+
+
+<body>
+<header th:insert="blocks/header :: header">
+
+</header>
+
+
+<div class="container mt-5">
+<!--    <h1>Блог сайта! Вот так заголовочек)))</h1>-->
+    <div th:each="elem : ${task}" class="alert alert-info mt-2">
+        <h3 th:text="${elem.task_name}"/>
+        <p th:text="${elem.parent_task_id}"/>
+        <p><b>Просмотры: </b><span th:text="${elem.views}"/></p><br>
+        <a th:href="'/blog/' + ${elem.id} + '/edit'" class="btn btn-warning">Кнопочка Редактировать...</a><br><br>
+        <form th:action="'/blog/' + ${elem.id} + '/remove'" method="post">
+            <button class="btn btn-warning" type="submit">Удалить-кнопка</button>     <!--            <a th:href="'/blog/' + ${elem.id} + '/remove'" class="btn btn-warning">И кнопочка Удалить...</a>-->
+        </form>
+
+    </div>
+</div>
+
+
+<div th:insert="blocks/footer :: footer">
+
+</div>
+
+
+
+</body>
+</html>

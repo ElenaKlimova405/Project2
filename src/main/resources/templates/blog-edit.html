@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--    <title>Getting Started: Serving Web Content</title>-->
+    <title>Редактирование таска (здесь - заголовок)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+</head>
+
+
+
+
+
+
+
+
+
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+
+<div class="container mt-5 mb-5">
+    <h1>А здесь - редактирование таска</h1>
+    <div th:each="el : ${task}"}>
+        <form method="post">
+            <input type="text" th:value="${el.task_name}" name="task_name" placeholder="Введите название таска" class="form-control"><br>
+            <input type="text" th:value="${el.parent_task_id}" name="parent_task_id" placeholder="Введите id родителя таска" class="form-control"><br>
+            <button type="submit" class="btn btn-success">Кнопка "ОБНОВИТЬ таск" ))</button><br>
+        </form>
+    </div>
+</div>
+
+
+<div th:insert="blocks/footer :: footer"></div>
+
+
+
+</body>
+</html>
