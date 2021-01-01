@@ -10,7 +10,7 @@ public class Roles {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long role_id;
-   // @NonNull
+    @NonNull
     private String role_name;
     //@OneToOne(fetch = FetchType.EAGER)
     //private Users user;
