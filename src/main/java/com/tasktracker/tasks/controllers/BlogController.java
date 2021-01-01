@@ -9,15 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.ArrayList;
 import java.util.Optional;
 
-@Controller
+//@Controller
 public class BlogController {
 
-     @Autowired
-     public TaskRepository taskRepository;
+   /* @Autowired
+    public TaskRepository taskRepository;
 
     @GetMapping("/blog")
     public String blogMain(Model model) {
@@ -79,5 +78,5 @@ public class BlogController {
         taskRepository.delete(task);
         return "redirect:/blog"; // выполняется шаблон "blog-add"
     }
-
+*/
 }

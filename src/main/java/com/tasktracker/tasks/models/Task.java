@@ -11,11 +11,8 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String task_name;
-
     private Long parent_task_id;
-
     private int views;
 
     public Task() {
