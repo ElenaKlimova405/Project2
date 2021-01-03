@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--    <title>Getting Started: Serving Web Content</title>-->
+    <title th:text="'TASK TRACKER - Редактирование пользователя'" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+</head>
+
+
+
+
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+
+<div class="container mt-5 mb-5">
+    <h1>Редактирование пользователя</h1>
+    <div th:each="el : ${user}"}>
+        <form method="post">
+            <input type="text" th:value="${el.first_name}" name="first_name" placeholder="Введите имя пользователя" class="form-control"><br>
+            <input type="text" th:value="${el.last_name}" name="last_name" placeholder="Введите фамилию пользователя" class="form-control"><br>
+            <input type="text" th:value="${el.second_name}" name="second_name" placeholder="Введите отчество пользователя" class="form-control"><br>
+            <input type="text" th:value="${el.e_mail}" name="e_mail" placeholder="Введите e_mail" class="form-control"><br>
+            <textarea  name="about_me" placeholder="Заполните поле 'О себе'" class="form-control" th:text="${el.about_me}"/><br>
+            <button type="submit" class="btn btn-success">Обновить информацию о пользователе</button><br>
+        </form>
+    </div>
+</div>
+
+
+<div th:insert="blocks/footer :: footer"></div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--    <title>Getting Started: Serving Web Content</title>-->
+    <title th:text="'TASK TRACKER - Подробнее о задаче'" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+</head>
+
+
+
+<body>
+<header th:insert="blocks/header :: header">
+</header>
+
+
+<div class="container mt-5">
+    <h1>Подробнее о задаче</h1>
+    <div th:each="elem : ${current_task}" class="alert alert-info mt-2">
+        <h3 th:text="${elem.task_name}"/>
+        <p th:text="${elem.task_preview}"/>
+        <p th:text="'Полное описание: ' + ${elem.task_description}"/>
+        <p th:text="'Является подзаданием для: ' + ${elem.parent_task}"/>
+        <p th:text="'Автор задания: ' + ${elem.author}"/>
+        <p th:text="'Пользователь, взявший задание: ' + ${elem.user_selected_the_task}"/>
+        <p th:text="'Дата взятия задания: ' + ${elem.taking_time}"/>
+        <p th:text="'Дата выполнения задания: ' + ${elem.completion_time}"/>
+        <p th:text="'Потраченное время: ' + ${elem.busy_time}"/>
+        <p><b>Просмотры: </b><span th:text="${elem.views}"/></p><br>
+
+        <a th:href="'/tasks/' + ${elem.task_id} + '/edit'" class="btn btn-warning">Редактировать</a><br><br>
+        <form th:action="'/tasks/' + ${elem.task_id} + '/remove'" method="post">
+            <button class="btn btn-danger" type="submit">Удалить</button>     <!--            <a th:href="'/blog/' + ${elem.id} + '/remove'" class="btn btn-warning">И кнопочка Удалить...</a>-->
+        </form>
+
+    </div>
+</div>
+
+
+<div th:insert="blocks/footer :: footer">
+
+</div>
+
+
+
+</body>
+</html>

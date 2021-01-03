@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--    <title>Getting Started: Serving Web Content</title>-->
+    <title th:text="'TASK TRACKER - Добавление пользователя'" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+</head>
+
+
+
+<body>
+<header th:insert="blocks/header :: header">
+
+</header>
+
+
+<div class="container mt-5 mb-5" >
+    <h1>Добавление пользователя</h1>
+    <form action="/users/add" method="post">
+        <input type="text" name="first_name" placeholder="Введите имя пользователя" class="form-control"><br>
+        <input type="text" name="last_name" placeholder="Введите фамилию пользователя" class="form-control"><br>
+        <input type="text" name="second_name" placeholder="Введите отчество пользователя" class="form-control"><br>
+        <input type="text" name="e_mail" placeholder="Введите e_mail" class="form-control"><br>
+        <textarea name="about_me" placeholder="Заполните поле 'О себе'" class="form-control"></textarea><br>
+        <button type="submit" class="btn btn-success">Добавить пользователя</button><br>
+    </form>
+</div>
+
+
+<div th:insert="blocks/footer :: footer">
+
+</div>
+
+
+</body>
+</html>

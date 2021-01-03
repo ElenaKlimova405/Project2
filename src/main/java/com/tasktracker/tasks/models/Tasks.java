@@ -15,17 +15,17 @@ public class Tasks {
     private String task_name;
     private String task_preview;
     private String task_description;
-    private Long views;
+    private Long views = 0L;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_task_id")
     @JsonIgnore
     private Tasks parent_task;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
-    @NonNull
+    //@NonNull
     @JsonIgnore
     private Users author;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_selected_the_task_id")
     @JsonIgnore
     private Users user_selected_the_task;
@@ -36,17 +36,21 @@ public class Tasks {
     public Tasks() {
     }
 
-    public Tasks(String task_name, String task_preview, String task_description, Long views, Tasks parent_task, Users author, Users user_selected_the_task, String taking_time, String completion_time, String busy_time) {
+    public Tasks(String task_name, String task_preview, String task_description, /*Long views, */Tasks parent_task, Users author, Users user_selected_the_task, String taking_time, String completion_time, String busy_time) {
         this.task_name = task_name;
         this.task_preview = task_preview;
         this.task_description = task_description;
-        this.views = views;
+        //this.views = views;
         this.parent_task = parent_task;
         this.author = author;
         this.user_selected_the_task = user_selected_the_task;
         this.taking_time = taking_time;
         this.completion_time = completion_time;
         this.busy_time = busy_time;
+    }
+
+    public void incrementViews() {
+        this.views++;
     }
 
     public Long getTask_id() {

@@ -10,13 +10,13 @@ public class MainController {
 
     @GetMapping("/")
     public String home(/*@RequestParam(name="name", required=false, defaultValue="World") String name, */Model model) {
-        model.addAttribute("title", "Главная страница");
+        model.addAttribute("someAttribute", "Сюда можно вставить имя пользователя");
         return "home";
     }
 
     @GetMapping("/about")
     public String about(/*@RequestParam(name="name", required=false, defaultValue="World") String name, */Model model) {
-        model.addAttribute("title", "А вот это - страница про нас ☺☻");
+        model.addAttribute("someAttribute", "Сюда можно вставить имя пользователя");
         return "about";
     }
 

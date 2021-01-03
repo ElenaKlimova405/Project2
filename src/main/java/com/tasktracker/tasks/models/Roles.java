@@ -1,9 +1,11 @@
 package com.tasktracker.tasks.models;
 
 import org.springframework.lang.NonNull;
+//import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
+/*
 @Entity
 @Table(name = "roles")
 public class Roles {
@@ -38,12 +40,17 @@ public class Roles {
         this.role_name = role_name;
     }
 }
+*/
+
 
 /*
-public enum Roles implements GrantedAuthority{
+public enum Roles implements GrantedAuthority {
     USER,
     ADMINISTRATOR;
 
 
-
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }*/

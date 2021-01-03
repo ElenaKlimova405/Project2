@@ -6,6 +6,7 @@ import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -13,19 +14,22 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long user_id;
-    @NonNull
+    //@NonNull
     private String login;
-    @NonNull
+    //@NonNull
     private Long hashcode;
     private String e_mail;
-    @NonNull
+    //@NonNull
     private String first_name;
     private String last_name;
     private String second_name;
-    @OneToOne(fetch = FetchType.EAGER)
+    //@OneToOne(fetch = FetchType.EAGER)
+    /*@ElementCollection(targetClass = Roles.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "role", joinColumns = @JoinColumn(name = "id"))
+    @Enumerated(EnumType.STRING)
     @NonNull
     @JsonIgnore
-    private Roles role;
+    private Set<Roles> role;*/
     private String about_me;
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -37,14 +41,14 @@ public class Users {
     public Users() {
     }
 
-    public Users(@NonNull String login, @NonNull Long hashcode, String e_mail, @NonNull String first_name, String last_name, String second_name, @NonNull Roles role, String about_me, List<Tasks> created_tasks, List<Tasks> selected_tasks) {
+    public Users(/*@NonNull*/ String login, /*@NonNull*/ Long hashcode, String e_mail, /*@NonNull*/ String first_name, String last_name, String second_name, /*@NonNull Set<Roles> role,*/ String about_me, List<Tasks> created_tasks, List<Tasks> selected_tasks) {
         this.login = login;
         this.hashcode = hashcode;
         this.e_mail = e_mail;
         this.first_name = first_name;
         this.last_name = last_name;
         this.second_name = second_name;
-        this.role = role;
+        //this.role = role;
         this.about_me = about_me;
         this.created_tasks = created_tasks;
         this.selected_tasks = selected_tasks;
@@ -109,14 +113,14 @@ public class Users {
         this.second_name = second_name;
     }
 
-    @NonNull
-    public Roles getRole() {
+    /*@NonNull
+    public Set<Roles> getRole() {
         return role;
     }
 
-    public void setRole(@NonNull Roles role) {
+    public void setRole(@NonNull Set<Roles> role) {
         this.role = role;
-    }
+    }*/
 
     public String getAbout_me() {
         return about_me;

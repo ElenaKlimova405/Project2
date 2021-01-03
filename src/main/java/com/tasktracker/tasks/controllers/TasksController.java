@@ -1,6 +1,5 @@
 package com.tasktracker.tasks.controllers;
 
-import com.tasktracker.tasks.models.Task;
 import com.tasktracker.tasks.models.Tasks;
 import com.tasktracker.tasks.repo.TasksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,30 +24,42 @@ public class TasksController {
         model.addAttribute("tasks", tasks);
         return "tasks-main";
     }
-/*
+
     @GetMapping("/tasks/add")
     public String tasksAdd(Model model) {
-        return "tasks-add";
+        return "tasks-add1";
     }
 
     @PostMapping("/tasks/add")
-    public String tasksPostAdd(@RequestParam String task_name, @RequestParam String parent_task_id, Model model) {
-        Long parent_task_idAsLong;
-        parent_task_idAsLong =  Long.parseLong(parent_task_id);
-        Tasks task = new Tasks(task_name, parent_task_idAsLong);
+    public String tasksPostAdd(@RequestParam String task_name, @RequestParam String task_preview, @RequestParam String task_description, Model model) {
+        Tasks task = new Tasks(task_name,
+                task_preview,
+                task_description,
+                //0L,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+                );
         tasksRepository.save(task); // сохранение нового объекта
         return "redirect:/tasks";
     }
 
-    @GetMapping("/tasks/{id}")
+   @GetMapping("/tasks/{id}")
     public String tasksDetails(@PathVariable(value = "id") long idParam, Model model) {
         if (!tasksRepository.existsById(idParam)) {
             return "redirect:/tasks";
         }
         Optional<Tasks> task = tasksRepository.findById(idParam);
-        ArrayList<Tasks> res = new ArrayList<>();
-        task.ifPresent(res::add);
-        model.addAttribute("task", res);
+        ArrayList<Tasks> current_task = new ArrayList<>();
+        task.ifPresent(current_task::add);
+        for (Tasks oneTask : current_task) {
+            oneTask.incrementViews();
+            tasksRepository.save(oneTask);
+        }
+        model.addAttribute("current_task", current_task);
         return "tasks-details";
     }
 
@@ -65,10 +76,11 @@ public class TasksController {
     }
 
     @PostMapping("/tasks/{id}/edit")
-    public String tasksPostUpdate(@PathVariable(value = "id") long id, @RequestParam String task_name, @RequestParam String parent_task_id, Model model) {
+    public String tasksPostUpdate(@PathVariable(value = "id") long id, @RequestParam String task_name, @RequestParam String task_preview, @RequestParam String task_description, Model model) {
         Tasks task = tasksRepository.findById(id).orElseThrow();
         task.setTask_name(task_name);
-        task.setParent_task_id(Long.parseLong(parent_task_id));
+        task.setTask_preview(task_preview);
+        task.setTask_description(task_description);
         tasksRepository.save(task);
         return "redirect:/tasks";
     }
@@ -79,5 +91,4 @@ public class TasksController {
         tasksRepository.delete(task);
         return "redirect:/tasks";
     }
-*/
 }

@@ -1,12 +1,17 @@
 package com.tasktracker.tasks.controllers;
 
-import com.tasktracker.tasks.models.Tasks;
 import com.tasktracker.tasks.models.Users;
 import com.tasktracker.tasks.repo.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.Optional;
 
 @Controller
 public class UsersController {
@@ -19,59 +24,59 @@ public class UsersController {
         model.addAttribute("users", users);
         return "users-main";
     }
-/*
-    @GetMapping("/tasks/add")
+
+    @GetMapping("/users/add")
     public String tasksAdd(Model model) {
-        return "tasks-add";
+        return "users-add";
     }
 
-    @PostMapping("/tasks/add")
-    public String tasksPostAdd(@RequestParam String task_name, @RequestParam String parent_task_id, Model model) {
-        Long parent_task_idAsLong;
-        parent_task_idAsLong =  Long.parseLong(parent_task_id);
-        Tasks task = new Tasks(task_name, parent_task_idAsLong);
-        tasksRepository.save(task); // сохранение нового объекта
-        return "redirect:/tasks";
+  @PostMapping("/users/add")
+    public String usersPostAdd(@RequestParam String first_name, @RequestParam String last_name, @RequestParam String second_name, @RequestParam String e_mail, @RequestParam String about_me, Model model) {
+        Users users = new Users(null, 0L, e_mail, first_name, last_name, second_name, about_me, null, null);
+        usersRepository.save(users); // сохранение нового объекта
+        return "redirect:/users";
     }
 
-    @GetMapping("/tasks/{id}")
-    public String tasksDetails(@PathVariable(value = "id") long idParam, Model model) {
-        if (!tasksRepository.existsById(idParam)) {
-            return "redirect:/tasks";
+    @GetMapping("/users/{id}")
+    public String usersDetails(@PathVariable(value = "id") long idParam, Model model) {
+        if (!usersRepository.existsById(idParam)) {
+            return "redirect:/users";
         }
-        Optional<Tasks> task = tasksRepository.findById(idParam);
-        ArrayList<Tasks> res = new ArrayList<>();
-        task.ifPresent(res::add);
-        model.addAttribute("task", res);
-        return "tasks-details";
+        Optional<Users> user = usersRepository.findById(idParam);
+        ArrayList<Users> current_user = new ArrayList<>();
+        user.ifPresent(current_user::add);
+        model.addAttribute("current_user", current_user);
+        return "users-details";
     }
 
-    @GetMapping("/tasks/{id}/edit")
-    public String tasksEdit(@PathVariable(value = "id") long idParam, Model model) {
-        if (!tasksRepository.existsById(idParam)) {
-            return "redirect:/tasks";
+    @GetMapping("/users/{id}/edit")
+    public String usersEdit(@PathVariable(value = "id") long idParam, Model model) {
+        if (!usersRepository.existsById(idParam)) {
+            return "redirect:/users";
         }
-        Optional<Tasks> task = tasksRepository.findById(idParam);
-        ArrayList<Tasks> res = new ArrayList<>();
-        task.ifPresent(res::add);
-        model.addAttribute("task", res);
-        return "tasks-edit";
+        Optional<Users> user = usersRepository.findById(idParam);
+        ArrayList<Users> res = new ArrayList<>();
+        user.ifPresent(res::add);
+        model.addAttribute("user", res);
+        return "users-edit";
     }
 
-    @PostMapping("/tasks/{id}/edit")
-    public String tasksPostUpdate(@PathVariable(value = "id") long id, @RequestParam String task_name, @RequestParam String parent_task_id, Model model) {
-        Tasks task = tasksRepository.findById(id).orElseThrow();
-        task.setTask_name(task_name);
-        task.setParent_task_id(Long.parseLong(parent_task_id));
-        tasksRepository.save(task);
-        return "redirect:/tasks";
+    @PostMapping("/users/{id}/edit")
+    public String usersPostUpdate(@PathVariable(value = "id") long id, @RequestParam String first_name, @RequestParam String last_name, @RequestParam String second_name, @RequestParam String e_mail, @RequestParam String about_me, Model model) {
+        Users user = usersRepository.findById(id).orElseThrow();
+        user.setFirst_name(first_name);
+        user.setLast_name(last_name);
+        user.setSecond_name(second_name);
+        user.setE_mail(e_mail);
+        user.setAbout_me(about_me);
+        usersRepository.save(user);
+        return "redirect:/users";
     }
 
-    @PostMapping("/tasks/{id}/remove")
-    public String tasksPostDelete(@PathVariable(value = "id") long id, Model model) {
-        Tasks task = tasksRepository.findById(id).orElseThrow();
-        tasksRepository.delete(task);
-        return "redirect:/tasks";
+    @PostMapping("/users/{id}/remove")
+    public String usersPostDelete(@PathVariable(value = "id") long id, Model model) {
+        Users user = usersRepository.findById(id).orElseThrow();
+        usersRepository.delete(user);
+        return "redirect:/users";
     }
-*/
 }
