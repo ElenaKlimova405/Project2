@@ -33,6 +33,11 @@
             <a th:href="'/tasks/' + ${current_parent_task.task_id}" class="alert-link" >[[${current_parent_task.task_name}]]</a>
             </div><br>
 
+            <p th:text="'Дочерние задания: '"/>
+            <div th:each="current_child_task : ${children}" class="alert alert-primary">
+                <a th:href="'/tasks/' + ${current_child_task.task_id}" class="alert-link" >[[${current_child_task.task_name}]]</a>
+            </div><br>
+
             <p th:text="'Автор задания: '"/>
             <div th:each="current_author : ${elem.author}" class="alert alert-primary">
                 <a th:href="'/users/' + ${current_author.user_id}" class="alert-link" >[[${current_author.username}]]</a>
