@@ -11,26 +11,33 @@
 
 
 <body>
-<header th:insert="blocks/header :: header">
-</header>
+    <header th:insert="blocks/header :: header">
+    </header>
 
 
-<div class="container mt-5">
-    <h1>Список задач</h1>
-    <div th:each="elem : ${tasks}" class="alert alert-info mt-2">
-        <h3 th:text="${elem.task_name}"/>
-<!--        <h4 th:text="'Является подзадачей к задаче ' + ${elem.parent_task.task_name}"/>-->
-        <p th:text="${elem.task_preview}"/>
-        <p><b>Просмотры: </b><span th:text="${elem.views}"/></p><br>
-
-
-
-        <a th:href="'/tasks/' + ${elem.task_id}" class="btn btn-info">Подробнее</a>
+    <div th:if="${param.error}">
+        Invalid username and password.
     </div>
-</div>
+    <div th:if="${param.logout}">
+        You have been logged out.
+    </div>
 
 
-<div th:insert="blocks/footer :: footer">
+
+    <div class="container mt-5">
+        <h1>Список задач</h1>
+        <div th:each="elem : ${tasks}" class="alert alert-info mt-2">
+            <h3 th:text="${elem.task_name}"/>
+    <!--        <h4 th:text="'Является подзадачей к задаче ' + ${elem.parent_task.task_name}"/>-->
+            <p th:text="${elem.task_preview}"/>
+            <p><b>Просмотры: </b><span th:text="${elem.views}"/></p><br>
+
+            <a th:href="'/tasks/' + ${elem.task_id}" class="btn btn-info">Подробнее</a>
+        </div>
+    </div>
+
+
+    <div th:insert="blocks/footer :: footer">
 
 </div>
 

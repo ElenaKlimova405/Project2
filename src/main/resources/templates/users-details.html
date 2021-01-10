@@ -11,39 +11,56 @@
 
 
 <body>
-<header th:insert="blocks/header :: header">
-</header>
+    <header th:insert="blocks/header :: header">
+    </header>
 
 
-<div class="container mt-5">
-    <h1>Подробнее о пользователе</h1>
-    <div th:each="elem : ${current_user}" class="alert alert-info mt-2">
-        <h3 th:text="'Логин: ' + ${elem.login}"/>
-        <p th:text="'Хэшкод пароля: ' + ${elem.hashcode}"/>
-        <p th:text="'e_mail: ' + ${elem.e_mail}"/>
-        <p th:text="'Фамилия: ' + ${elem.last_name}"/>
-        <p th:text="'Имя: ' + ${elem.first_name}"/>
-        <p th:text="'Отчество: ' + ${elem.second_name}"/>
-        <p th:text="'Обо мне: ' + ${elem.about_me}"/>
-        <p th:text="'Созданные задания: ' + ${elem.created_tasks}"/>
-        <p th:text="'Взятые задания: ' + ${elem.selected_tasks}"/>
-<!--        "выше еще будет написана дата выполнения задания, если есть"-->
+    <div th:if="${param.error}">
+        Invalid username and password.
+    </div>
+    <div th:if="${param.logout}">
+        You have been logged out.
+    </div>
 
-        <a th:href="'/users/' + ${elem.user_id} + '/edit'" class="btn btn-warning">Редактировать</a><br><br>
-        <form th:action="'/users/' + ${elem.user_id} + '/remove'" method="post">
-            <button class="btn btn-danger" type="submit">Удалить</button>     <!--            <a th:href="'/blog/' + ${elem.id} + '/remove'" class="btn btn-warning">И кнопочка Удалить...</a>-->
-        </form>
 
-<!--        кнопка взять таск-->
-<!--        после взятия - кнопка сдать таск-->
+
+
+    <div class="container mt-5">
+        <h1>Подробнее о пользователе</h1>
+        <div th:each="elem : ${current_user}" class="alert alert-info mt-2">
+            <h3 th:text="'Логин: ' + ${elem.username}"/>
+            <p th:text="'Пароль: ' + ${elem.password}"/>
+            <p th:text="'e_mail: ' + ${elem.e_mail}"/>
+            <p th:text="'Фамилия: ' + ${elem.last_name}"/>
+            <p th:text="'Имя: ' + ${elem.first_name}"/>
+            <p th:text="'Отчество: ' + ${elem.second_name}"/>
+            <p th:text="'Обо мне: ' + ${elem.about_me}"/>
+<!--            <p th:text="'Созданные задания: ' + ${elem.created_tasks}"/>-->
+            <p th:text="'Созданные задания: '"/>
+            <div th:each="current_task : ${elem.created_tasks}" class="alert alert-primary">
+                <a th:href="'/tasks/' + ${current_task.task_id}" class="alert-link" >[[${current_task.task_name}]]</a>
+            </div>
+            <p th:text="'Взятые задания: ' "/>
+            <div th:each="selected_task : ${elem.selected_tasks}" class="alert alert-primary">
+                <a th:href="'/tasks/' + ${selected_task.task_id}" class="alert-link" >[[${selected_task.task_name}]]</a>
+            </div><br>
+    <!--        "выше еще будет написана дата выполнения задания, если есть"-->
+
+            <a th:href="'/users/' + ${elem.user_id} + '/edit'" class="btn btn-warning">Редактировать</a><br><br>
+            <form th:action="'/users/' + ${elem.user_id} + '/remove'" method="post">
+                <button class="btn btn-danger" type="submit">Удалить</button>     <!--            <a th:href="'/blog/' + ${elem.id} + '/remove'" class="btn btn-warning">И кнопочка Удалить...</a>-->
+            </form>
+
+    <!--        кнопка взять таск-->
+    <!--        после взятия - кнопка сдать таск-->
+
+        </div>
+    </div>
+
+
+    <div th:insert="blocks/footer :: footer">
 
     </div>
-</div>
-
-
-<div th:insert="blocks/footer :: footer">
-
-</div>
 
 
 

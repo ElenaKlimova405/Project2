@@ -1,8 +1,10 @@
 package com.tasktracker.tasks.controllers;
 
 import com.tasktracker.tasks.models.Tasks;
+import com.tasktracker.tasks.models.Users;
 import com.tasktracker.tasks.repo.TasksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,13 +33,18 @@ public class TasksController {
     }
 
     @PostMapping("/tasks/add")
-    public String tasksPostAdd(@RequestParam String task_name, @RequestParam String task_preview, @RequestParam String task_description, Model model) {
+    public String tasksPostAdd(
+            @AuthenticationPrincipal Users user,
+            @RequestParam String task_name,
+            @RequestParam String task_preview,
+            @RequestParam String task_description,
+            Model model
+    ) {
         Tasks task = new Tasks(task_name,
                 task_preview,
                 task_description,
-                //0L,
                 null,
-                null,
+                user,//null,
                 null,
                 null,
                 null,
@@ -91,4 +98,41 @@ public class TasksController {
         tasksRepository.delete(task);
         return "redirect:/tasks";
     }
+
+    @GetMapping("/tasks/{id}/create_subtask")
+    public String tasksPostCreateSubtaskSubmit(@PathVariable(value = "id") long id, Model model) {
+        Tasks parent = tasksRepository.findById(id).orElseThrow();
+        model.addAttribute("parent", parent);
+        return "tasks-create-subtask";
+    }
+
+    @PostMapping("/tasks/{id}/create_subtask")
+    public String tasksPostCreateSubtaskSubmit(@PathVariable(value = "id") long id,
+                                               @AuthenticationPrincipal Users user,
+                                               @RequestParam String task_name,
+                                               @RequestParam String task_preview,
+                                               @RequestParam String task_description,
+                                               Model model
+    ) {
+        if (!tasksRepository.existsById(id)) {
+            return "redirect:/tasks";
+        }
+        Tasks parent = tasksRepository.findById(id).orElseThrow();
+        Tasks subtask = new Tasks(task_name,
+                    task_preview,
+                    task_description,
+                    parent,
+                    user,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+        tasksRepository.save(subtask); // сохранение нового объекта
+        return "redirect:/tasks";
+    }
+
+
 }
+
+

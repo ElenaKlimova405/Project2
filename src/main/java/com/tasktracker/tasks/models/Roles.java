@@ -1,53 +1,76 @@
 package com.tasktracker.tasks.models;
 
-import org.springframework.lang.NonNull;
-//import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
+
+public enum Roles implements GrantedAuthority {
+    USER,
+    ADMINISTRATOR,
+    PROGRAMMER;
+
+    @Override
+    public String getAuthority() {
+        return name();
+    }
+}
+
 /*
 @Entity
-@Table(name = "roles")
-public class Roles {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long role_id;
-    @NonNull
-    private String role_name;
-    //@OneToOne(fetch = FetchType.EAGER)
-    //private Users user;
+public class Roles implements GrantedAuthority {
 
-    public Long getRole_id() {
+    @Id
+    @SequenceGenerator(name = "role_id_sequence_gen",
+            sequenceName="role_id_sequence", initialValue = 10)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_id_sequence_gen")
+    private Long role_id;
+    private String name;
+
+    @Column(unique = true)
+    private String authority;
+
+    public Long getId() {
         return role_id;
     }
 
-    public Roles() {
-    }
-
-    public Roles(String role_name) {
-        this.role_name = role_name;
-    }
-
-    public void setRole_id(Long role_id) {
+    public void setId(Long role_id) {
         this.role_id = role_id;
     }
 
-    public String getRole_name() {
-        return role_name;
+    @Override
+    public String getAuthority() {
+        return authority;
     }
 
-    public void setRole_name(String role_name) {
-        this.role_name = role_name;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
+
 */
 
 
 /*
+import org.springframework.security.core.GrantedAuthority;
+
+
 public enum Roles implements GrantedAuthority {
     USER,
     ADMINISTRATOR;
-
 
     @Override
     public String getAuthority() {

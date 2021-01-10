@@ -1,54 +1,60 @@
 package com.tasktracker.tasks.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.data.repository.cdi.Eager;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class Users {
+public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long user_id;
     //@NonNull
-    private String login;
+    @Column(unique = true)
+    private String username;
     //@NonNull
-    private Long hashcode;
+    private String password;
+    private boolean active = true;
+    @ElementCollection(targetClass = Roles.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Roles> roles;
+
     private String e_mail;
     //@NonNull
     private String first_name;
     private String last_name;
     private String second_name;
-    //@OneToOne(fetch = FetchType.EAGER)
-    /*@ElementCollection(targetClass = Roles.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "role", joinColumns = @JoinColumn(name = "id"))
-    @Enumerated(EnumType.STRING)
-    @NonNull
-    @JsonIgnore
-    private Set<Roles> role;*/
     private String about_me;
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL/*, orphanRemoval = true*/)
+    //@JsonIgnore
+    @Column(name = "created_task_id")
     private List<Tasks> created_tasks;
-    @OneToMany(mappedBy = "user_selected_the_task", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @OneToMany(mappedBy = "user_selected_the_task", cascade = CascadeType.ALL/*, orphanRemoval = true*/)
+    //@JsonIgnore
+    @Column(name = "selected_task_id")
     private List<Tasks> selected_tasks;
 
     public Users() {
     }
 
-    public Users(/*@NonNull*/ String login, /*@NonNull*/ Long hashcode, String e_mail, /*@NonNull*/ String first_name, String last_name, String second_name, /*@NonNull Set<Roles> role,*/ String about_me, List<Tasks> created_tasks, List<Tasks> selected_tasks) {
-        this.login = login;
-        this.hashcode = hashcode;
+
+    public Users(String username, String password, boolean active, Set<Roles> roles, String e_mail, String first_name, String last_name, String second_name, String about_me, List<Tasks> created_tasks, List<Tasks> selected_tasks) {
+        this.username = username;
+        this.password = password;
+        this.active = active;
+        this.roles = roles;
         this.e_mail = e_mail;
         this.first_name = first_name;
         this.last_name = last_name;
         this.second_name = second_name;
-        //this.role = role;
         this.about_me = about_me;
         this.created_tasks = created_tasks;
         this.selected_tasks = selected_tasks;
@@ -62,22 +68,38 @@ public class Users {
         this.user_id = user_id;
     }
 
-    @NonNull
-    public String getLogin() {
-        return login;
+    @Override
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogin(@NonNull String login) {
-        this.login = login;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    @NonNull
-    public Long getHashcode() {
-        return hashcode;
+    @Override
+    public String getPassword() {
+        return password;
     }
 
-    public void setHashcode(@NonNull Long hashcode) {
-        this.hashcode = hashcode;
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Set<Roles> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Roles> roles) {
+        this.roles = roles;
     }
 
     public String getE_mail() {
@@ -88,12 +110,11 @@ public class Users {
         this.e_mail = e_mail;
     }
 
-    @NonNull
     public String getFirst_name() {
         return first_name;
     }
 
-    public void setFirst_name(@NonNull String first_name) {
+    public void setFirst_name(String first_name) {
         this.first_name = first_name;
     }
 
@@ -112,15 +133,6 @@ public class Users {
     public void setSecond_name(String second_name) {
         this.second_name = second_name;
     }
-
-    /*@NonNull
-    public Set<Roles> getRole() {
-        return role;
-    }
-
-    public void setRole(@NonNull Set<Roles> role) {
-        this.role = role;
-    }*/
 
     public String getAbout_me() {
         return about_me;
@@ -145,4 +157,30 @@ public class Users {
     public void setSelected_tasks(List<Tasks> selected_tasks) {
         this.selected_tasks = selected_tasks;
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.getRoles();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.isActive();
+    }
+
 }

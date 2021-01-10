@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.ArrayList;
 import java.util.Optional;
 
-@Controller//
+@Controller
 public class UsersController {
     @Autowired
     public UsersRepository usersRepository;
@@ -32,7 +32,7 @@ public class UsersController {
 
   @PostMapping("/users/add")
     public String usersPostAdd(@RequestParam String first_name, @RequestParam String last_name, @RequestParam String second_name, @RequestParam String e_mail, @RequestParam String about_me, Model model) {
-        Users users = new Users(null, 0L, e_mail, first_name, last_name, second_name, about_me, null, null);
+        Users users = new Users(null, null, true, null, e_mail, first_name, last_name, second_name, about_me, null, null);
         usersRepository.save(users); // сохранение нового объекта
         return "redirect:/users";
     }
