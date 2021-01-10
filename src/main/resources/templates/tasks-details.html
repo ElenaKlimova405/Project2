@@ -28,19 +28,26 @@
             <h3 th:text="${elem.task_name}"/>
             <p th:text="${elem.task_preview}"/>
 
-            <p th:text="'Является подзаданием для: '"/>
+            <p th:text="'Родительское задание: '"/>
             <div th:each="current_parent_task : ${elem.parent_task}" class="alert alert-primary">
             <a th:href="'/tasks/' + ${current_parent_task.task_id}" class="alert-link" >[[${current_parent_task.task_name}]]</a>
             </div><br>
+
+
+
+<!--           todo // добавить дочернее задание-->
+
+
+
 
             <p th:text="'Автор задания: '"/>
             <div th:each="current_author : ${elem.author}" class="alert alert-primary">
                 <a th:href="'/users/' + ${current_author.user_id}" class="alert-link" >[[${current_author.username}]]</a>
             </div><br>
 
-            <p th:text="'Пользователь, взявший задание: ' + ${elem.user_selected_the_task}"/>
-            <div th:each="current_author : ${elem.author}" class="alert alert-primary">
-                <a th:href="'/users/' + ${current_author.user_id}" class="alert-link" >[[${current_author.username}]]</a>
+            <p th:text="'Пользователь, взявший задание: '"/>
+            <div th:each="current_user_selected_the_task : ${elem.user_selected_the_task}" class="alert alert-primary">
+                <a th:href="'/users/' + ${current_user_selected_the_task.user_id}" class="alert-link" >[[${current_user_selected_the_task.username}]]</a>
             </div><br>
 
             <p th:text="'Дата взятия задания: ' + ${elem.taking_time}"/>
@@ -56,10 +63,6 @@
 
             <a th:href="'/tasks/' + ${elem.task_id} + '/edit'" class="btn btn-warning">Редактировать</a><br><br>
             <a th:href="'/tasks/' + ${elem.task_id} + '/remove'" class="btn btn-danger">Удалить</a>
-<!--            <form th:action="'/tasks/' + ${elem.task_id} + '/remove'" method="post">-->
-<!--                <button class="btn btn-danger" type="submit">Удалить</button>     &lt;!&ndash;            <a th:href="'/blog/' + ${elem.id} + '/remove'" class="btn btn-warning">И кнопочка Удалить...</a>&ndash;&gt;-->
-<!--            </form>-->
-
 
 
         </div>

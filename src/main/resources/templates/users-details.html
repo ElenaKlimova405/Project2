@@ -44,15 +44,19 @@
             <div th:each="selected_task : ${elem.selected_tasks}" class="alert alert-primary">
                 <a th:href="'/tasks/' + ${selected_task.task_id}" class="alert-link" >[[${selected_task.task_name}]]</a>
             </div><br>
-    <!--        "выше еще будет написана дата выполнения задания, если есть"-->
+
+
+
+
+    <!--    todo    "выше еще будет написана дата выполнения задания, если есть"-->
+
+
 
             <a th:href="'/users/' + ${elem.user_id} + '/edit'" class="btn btn-warning">Редактировать</a><br><br>
             <form th:action="'/users/' + ${elem.user_id} + '/remove'" method="post">
                 <button class="btn btn-danger" type="submit">Удалить</button>     <!--            <a th:href="'/blog/' + ${elem.id} + '/remove'" class="btn btn-warning">И кнопочка Удалить...</a>-->
             </form>
 
-    <!--        кнопка взять таск-->
-    <!--        после взятия - кнопка сдать таск-->
 
         </div>
     </div>
