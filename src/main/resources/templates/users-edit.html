@@ -30,7 +30,7 @@
                    class="form-control"><br>
             <input type="text" th:value="${el.second_name}" name="second_name"
                    placeholder="Введите отчество пользователя" class="form-control"><br>
-            <input type="text" th:value="${el.e_mail}" name="e_mail" placeholder="Введите e_mail"
+            <input type="email" th:value="${el.e_mail}" name="e_mail" placeholder="Введите e_mail"
                    class="form-control"><br>
             <textarea name="about_me" placeholder="Заполните поле 'О себе'" class="form-control"
                       th:text="${el.about_me}"/><br>

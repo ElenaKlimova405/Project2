@@ -28,6 +28,8 @@ public class Users implements UserDetails {
     private Set<Roles> roles;
 
     private String e_mail;
+    private String activationCode;
+
     //@NonNull
     private String first_name;
     private String last_name;
@@ -108,6 +110,14 @@ public class Users implements UserDetails {
 
     public void setE_mail(String e_mail) {
         this.e_mail = e_mail;
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
     }
 
     public String getFirst_name() {

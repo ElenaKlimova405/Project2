@@ -23,7 +23,7 @@
 
 <div class="container mt-5">
     <h1>Список задач</h1>
-    <div th:each="elem : ${tasks}" class="alert alert-info mt-2">
+    <div th:each="elem : ${parentTasks}" class="alert alert-info mt-2">
         <h3 th:text="${elem.getTask_name}"/>
         <!--        <h4 th:text="'Является подзадачей к задаче ' + ${elem.parent_task.task_name}"/>-->
         <p th:text="${elem.getTask_preview}"/>

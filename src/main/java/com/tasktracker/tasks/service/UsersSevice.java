@@ -16,4 +16,6 @@ public class UsersSevice implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return usersRepository.findByUsername(username);
     }
+
+
 }

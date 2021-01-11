@@ -27,8 +27,10 @@ public class TasksController {
 
     @GetMapping("/tasks")
     public String tasksMain(Model model) {
-        Iterable<Tasks> tasks = tasksRepository.findAll();
-        model.addAttribute("tasks", tasks);
+        //Iterable<Tasks> tasks = tasksRepository.findAll();
+        List<Tasks> parentTasks = tasksRepository.findParents();
+        //model.addAttribute("tasks", tasks);
+        model.addAttribute("parentTasks", parentTasks);
         return "tasks-main";
     }
 

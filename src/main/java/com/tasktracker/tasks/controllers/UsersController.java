@@ -2,8 +2,10 @@ package com.tasktracker.tasks.controllers;
 
 import com.tasktracker.tasks.models.Users;
 import com.tasktracker.tasks.repo.UsersRepository;
+import com.tasktracker.tasks.service.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +15,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class UsersController {
     @Autowired
     public UsersRepository usersRepository;
+
+    @Autowired
+    private MailSender mailSender;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/users")
     public String usersMain(Model model) {
@@ -78,12 +87,29 @@ public class UsersController {
     @PostMapping("/users/{id}/edit")
     public String usersPostUpdate(@PathVariable(value = "id") long id, @RequestParam String first_name, @RequestParam String last_name, @RequestParam String second_name, @RequestParam String e_mail, @RequestParam String about_me, Model model) {
         Users user = usersRepository.findById(id).orElseThrow();
+
+        /*if (!user.getE_mail().equals(e_mail)) {
+            user.setActivationCode(UUID.randomUUID().toString());
+        }*/
+
         user.setFirst_name(first_name);
         user.setLast_name(last_name);
         user.setSecond_name(second_name);
         user.setE_mail(e_mail);
         user.setAbout_me(about_me);
         usersRepository.save(user);
+
+        /*if (!user.getE_mail().isEmpty() && user.getE_mail() != null) {
+            String message = String.format(
+                "Hello, %s! \n" +
+                        "Welcome to Task tracker! Please, visit next link: http://localhost:8080/activate/%s",
+                    user.getUsername(),
+                    user.getActivationCode()
+
+            );
+            mailSender.send(user.getE_mail(), "Activation code", message);
+        }*/
+
         return "redirect:/users/" + user.getUser_id();
     }
 

@@ -26,11 +26,16 @@
     <div th:each="elem : ${current_user}" class="alert alert-info mt-2">
         <h3 th:text="'Логин: ' + ${elem.username}"/>
         <p th:text="'Пароль: ' + ${elem.password}"/>
+        <p th:text="'Роли: '"/>
+        <div th:each="current_role : ${elem.roles}" class="alert alert-primary">
+            <a th:text="${current_role}"/>
+        </div>
         <p th:text="'Активный аккаунт: ' + ${elem.active}"/>
-        <p th:text="'e_mail: ' + ${elem.e_mail}"/>
+
         <p th:text="'Фамилия: ' + ${elem.last_name}"/>
         <p th:text="'Имя: ' + ${elem.first_name}"/>
         <p th:text="'Отчество: ' + ${elem.second_name}"/>
+        <p th:text="'e_mail: ' + ${elem.e_mail}"/>
         <p th:text="'Обо мне: ' + ${elem.about_me}"/>
         <!--            <p th:text="'Созданные задания: ' + ${elem.created_tasks}"/>-->
         <p th:text="'Созданные задания: '"/>

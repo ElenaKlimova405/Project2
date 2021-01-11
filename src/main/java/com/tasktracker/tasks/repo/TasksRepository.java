@@ -10,4 +10,7 @@ import java.util.List;
 public interface TasksRepository extends CrudRepository<Tasks, Long> {
     @Query("SELECT t FROM Tasks t WHERE t.parent_task = :task ORDER BY t.task_id")
     List<Tasks> findChildren(@Param("task") Tasks task);
+
+    @Query("SELECT t FROM Tasks t WHERE t.parent_task = NULL ORDER BY t.task_id")
+    List<Tasks> findParents();
 }
