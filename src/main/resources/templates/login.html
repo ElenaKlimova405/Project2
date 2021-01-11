@@ -3,36 +3,37 @@
       xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <!--    <title>Getting Started: Serving Web Content</title>-->
-    <title th:text="'Spring Security'" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="'Spring Security'"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
 </head>
 
 
 <body>
-    <header th:insert="blocks/header :: header">
-    </header>
+<header th:insert="blocks/header :: header">
+</header>
 
 
-    <div th:if="${param.error}">
-        Invalid username and password.
-    </div>
-    <div th:if="${param.logout}">
-        You have been logged out.
-    </div>
+<div th:if="${param.error}">
+    Invalid username and password.
+</div>
+<div th:if="${param.logout}">
+    You have been logged out.
+</div>
 
-    <div class="container mt-5 mb-5" >
-        <h1>Вход в Task tracker</h1>
-        <form th:action="@{/login}" method="post">
-            <input type="text" name="username" placeholder="Логин:" class="form-control"><br>
-            <input type="password" name="password" placeholder="Пароль:" class="form-control"><br>
-            <button type="submit" class="btn btn-success">Войти</button><br>
-        </form>
-    </div>
+<div class="container mt-5 mb-5">
+    <h1>Вход в Task tracker</h1>
+    <form th:action="@{/login}" method="post">
+        <input type="text" name="username" placeholder="Логин:" class="form-control"><br>
+        <input type="password" name="password" placeholder="Пароль:" class="form-control"><br>
+        <button type="submit" class="btn btn-success">Войти</button>
+        <br>
+    </form>
+</div>
 
 
-    <div th:insert="blocks/footer :: footer">
-    </div>
+<div th:insert="blocks/footer :: footer">
+</div>
 
 </body>
 </html>

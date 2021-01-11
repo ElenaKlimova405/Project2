@@ -68,7 +68,7 @@ public class Tasks {
     }
 
     public String getTask_name() {
-        return task_name != null ? task_name : "<none>";
+        return task_name != null ? task_name : "";
     }
 
     public void setTask_name(String task_name) {
@@ -76,7 +76,7 @@ public class Tasks {
     }
 
     public String getTask_preview() {
-        return task_preview != null ? task_preview : "<none>";
+        return task_preview != null ? task_preview : "";
     }
 
     public void setTask_preview(String task_preview) {
@@ -84,7 +84,7 @@ public class Tasks {
     }
 
     public String getTask_description() {
-        return task_description != null ? task_description : "<none>";
+        return task_description != null ? task_description : "";
     }
 
     public void setTask_description(String task_description) {
@@ -124,7 +124,7 @@ public class Tasks {
     }
 
     public String getTaking_time() {
-        return taking_time != null ? taking_time : "<none>";
+        return taking_time != null ? taking_time : "";
     }
 
     public void setTaking_time(String taking_time) {
@@ -132,7 +132,7 @@ public class Tasks {
     }
 
     public String getCompletion_time() {
-        return completion_time != null ? completion_time : "<none>";
+        return completion_time != null ? completion_time : "";
     }
 
     public void setCompletion_time(String completion_time) {
@@ -140,7 +140,7 @@ public class Tasks {
     }
 
     public String getBusy_time() {
-        return busy_time != null ? busy_time : "<none>";
+        return busy_time != null ? busy_time : "";
     }
 
     public void setBusy_time(String busy_time) {

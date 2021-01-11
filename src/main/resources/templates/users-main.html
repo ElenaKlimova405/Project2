@@ -2,46 +2,41 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <!--    <title>Getting Started: Serving Web Content</title>-->
-    <title th:text="'TASK TRACKER - Список пользователей'" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="'TASK TRACKER - Список пользователей'"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
 </head>
 
 
-
-
 <body>
-    <header th:insert="blocks/header :: header">
-    </header>
+<header th:insert="blocks/header :: header">
+</header>
 
 
-    <div th:if="${param.error}">
-        Invalid username and password.
+<div th:if="${param.error}">
+    Invalid username and password.
+</div>
+<div th:if="${param.logout}">
+    You have been logged out.
+</div>
+
+
+<div class="container mt-5">
+    <h1>Список пользователей</h1>
+    <div th:each="elem : ${users}" class="alert alert-info mt-2">
+        <h2 th:text="${elem.getUsername}"/>
+        <h3 th:text="${elem.getFirst_name} + ' ' + ${elem.getLast_name} + ' ' + ${elem.getSecond_name}"/>
+        <!--        <p th:text="${elem.role.role_name}"/>-->
+        <h4 th:text="${elem.getE_mail}"/>
+        <a th:href="'/users/' + ${elem.user_id}" class="btn btn-info">Подробнее</a>
+        <!--        <a th:href="'/users/1'" class="btn btn-warning">Посмотреть детальнее...</a>-->
     </div>
-    <div th:if="${param.logout}">
-        You have been logged out.
-    </div>
+</div>
 
 
+<div th:insert="blocks/footer :: footer">
 
-
-    <div class="container mt-5">
-        <h1>Список пользователей</h1>
-        <div th:each="elem : ${users}" class="alert alert-info mt-2">
-            <h3 th:text="${elem.first_name} + ' ' + ${elem.last_name} + ' ' + ${elem.second_name}"/>
-    <!--        <p th:text="${elem.role.role_name}"/>-->
-            <h4 th:text="${elem.e_mail}"/>
-            <p th:text="${elem.about_me}"/>
-            <a th:href="'/users/' + ${elem.user_id}" class="btn btn-info">Подробнее</a>
-    <!--        <a th:href="'/users/1'" class="btn btn-warning">Посмотреть детальнее...</a>-->
-        </div>
-    </div>
-
-
-    <div th:insert="blocks/footer :: footer">
-
-    </div>
-
+</div>
 
 
 </body>

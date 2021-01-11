@@ -2,79 +2,81 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <!--    <title>Getting Started: Serving Web Content</title>-->
-    <title th:text="'TASK TRACKER - Подробнее о задаче'" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="'TASK TRACKER - Подробнее о задаче'"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
 </head>
 
 
-
 <body>
-    <header th:insert="blocks/header :: header">
-    </header>
+<header th:insert="blocks/header :: header">
+</header>
 
-    <div th:if="${param.error}">
-        Invalid username and password.
-    </div>
-    <div th:if="${param.logout}">
-        You have been logged out.
-    </div>
-
-
-
-    <div class="container mt-5">
-        <h1>Подробнее о задаче</h1>
-        <div th:each="elem : ${current_task}" class="alert alert-info mt-2">
-            <h3 th:text="${elem.task_name}"/>
-            <p th:text="${elem.task_preview}"/>
-
-            <p th:text="'Родительское задание: '"/>
-            <div th:each="current_parent_task : ${elem.parent_task}" class="alert alert-primary">
-            <a th:href="'/tasks/' + ${current_parent_task.task_id}" class="alert-link" >[[${current_parent_task.task_name}]]</a>
-            </div><br>
-
-            <p th:text="'Дочерние задания: '"/>
-            <div th:each="current_child_task : ${children}" class="alert alert-primary">
-                <a th:href="'/tasks/' + ${current_child_task.task_id}" class="alert-link" >[[${current_child_task.task_name}]]</a>
-            </div><br>
-
-            <p th:text="'Автор задания: '"/>
-            <div th:each="current_author : ${elem.author}" class="alert alert-primary">
-                <a th:href="'/users/' + ${current_author.user_id}" class="alert-link" >[[${current_author.username}]]</a>
-            </div><br>
-
-            <p th:text="'Пользователь, взявший задание: '"/>
-            <div th:each="current_user_selected_the_task : ${elem.user_selected_the_task}" class="alert alert-primary">
-                <a th:href="'/users/' + ${current_user_selected_the_task.user_id}" class="alert-link" >[[${current_user_selected_the_task.username}]]</a>
-            </div><br>
-
-            <p th:text="'Дата взятия задания: ' + ${elem.taking_time}"/>
-            <p th:text="'Дата выполнения задания: ' + ${elem.completion_time}"/>
-            <p th:text="'Потраченное время: ' + ${elem.busy_time}"/>
-
-            <p><b>Просмотры: </b><span th:text="${elem.views}"/></p><br>
-            <p th:text="'Полное описание: ' + ${elem.task_description}"/><br><br>
-
-            <a th:href="'/tasks/' + ${elem.task_id} + '/create_subtask'" class="btn btn-info">Cоздать подзадачу</a><br><br>
-            <a th:href="'/tasks/' + ${elem.task_id} + '/get_task'" class="btn btn-info">Взять задачу</a><br><br>
-            <a th:href="'/tasks/' + ${elem.task_id} + '/mark_solved'" class="btn btn-info">Отметить решенной</a><br><br>
-
-            <a th:href="'/tasks/' + ${elem.task_id} + '/edit'" class="btn btn-warning">Редактировать</a><br><br>
-            <a th:href="'/tasks/' + ${elem.task_id} + '/remove'" class="btn btn-danger">Удалить</a>
-<!--            <form th:action="'/tasks/' + ${elem.task_id} + '/remove'" method="post">-->
-<!--                <button class="btn btn-danger" type="submit">Удалить</button>     &lt;!&ndash;            <a th:href="'/blog/' + ${elem.id} + '/remove'" class="btn btn-warning">И кнопочка Удалить...</a>&ndash;&gt;-->
-<!--            </form>-->
+<div th:if="${param.error}">
+    Invalid username and password.
+</div>
+<div th:if="${param.logout}">
+    You have been logged out.
+</div>
 
 
+<div class="container mt-5">
+    <h1>Подробнее о задаче</h1>
+    <div th:each="elem : ${current_task}" class="alert alert-info mt-2">
+        <h3 th:text="${elem.getTask_name}"/>
+        <p th:text="${elem.getTask_preview}"/>
 
+        <p th:text="'Является подзаданием для: '"/>
+        <div th:each="current_parent_task : ${elem.getParent_task}" class="alert alert-primary">
+            <a th:href="'/tasks/' + ${current_parent_task.getTask_id}" class="alert-link">[[${current_parent_task.task_name}]]</a>
         </div>
+        <br>
+
+        <p th:text="'Содержит подзадания: '"/>
+        <div th:each="current_child_task : ${children}" class="alert alert-primary">
+            <a th:href="'/tasks/' + ${current_child_task.getTask_id}" class="alert-link">[[${current_child_task.task_name}]]</a>
+        </div>
+        <br>
+
+        <p th:text="'Автор задания: '"/>
+        <div th:each="current_author : ${elem.getAuthor}" class="alert alert-primary">
+            <a th:href="'/users/' + ${current_author.getUser_id}" class="alert-link">[[${current_author.username}]]</a>
+        </div>
+        <br>
+
+        <p th:text="'Пользователь, взявший задание: '"/>
+        <div th:each="current_user_selected_the_task : ${elem.getUser_selected_the_task}" class="alert alert-primary">
+            <a th:href="'/users/' + ${current_user_selected_the_task.getUser_id}" class="alert-link">[[${current_user_selected_the_task.username}]]</a>
+        </div>
+        <br>
+
+        <p th:text="'Дата взятия задания: ' + ${elem.getTaking_time}"/>
+        <p th:text="'Дата выполнения задания: ' + ${elem.getCompletion_time}"/>
+        <p th:text="'Потраченное время: ' + ${elem.getBusy_time}"/>
+
+        <p><b>Просмотры: </b><span th:text="${elem.getViews}"/></p><br>
+        <p th:text="'Полное описание: ' + ${elem.getTask_description}"/><br><br>
+
+        <a th:href="'/tasks/' + ${elem.getTask_id} + '/create_subtask'" class="btn btn-info">Cоздать подзадачу</a><br><br>
+        <a th:href="'/tasks/' + ${elem.getTask_id} + '/get_task'" class="btn btn-info">Взять задачу</a><br><br>
+        <a th:href="'/tasks/' + ${elem.getTask_id} + '/get_task_cancel'" class="btn btn-warning">Отказаться от
+            задачи</a><br><br>
+        <a th:href="'/tasks/' + ${elem.getTask_id} + '/mark_solved'" class="btn btn-info">Отметить решенной</a><br><br>
+
+        <a th:href="'/tasks/' + ${elem.getTask_id} + '/edit'" class="btn btn-warning">Редактировать</a><br><br>
+        <a th:href="'/tasks/' + ${elem.getTask_id} + '/remove'" class="btn btn-danger">Удалить</a>
+        <!--            <form th:action="'/tasks/' + ${elem.task_id} + '/remove'" method="post">-->
+        <!--                <button class="btn btn-danger" type="submit">Удалить</button>     &lt;!&ndash;            <a th:href="'/blog/' + ${elem.id} + '/remove'" class="btn btn-warning">И кнопочка Удалить...</a>&ndash;&gt;-->
+        <!--            </form>-->
+
+
     </div>
+</div>
 
 
-    <div th:insert="blocks/footer :: footer">
+<div th:insert="blocks/footer :: footer">
 
-    </div>
-
+</div>
 
 
 </body>

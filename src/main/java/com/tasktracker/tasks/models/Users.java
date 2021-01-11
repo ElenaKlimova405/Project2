@@ -70,7 +70,7 @@ public class Users implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return username != null ? username : "";
     }
 
     public void setUsername(String username) {
@@ -79,7 +79,7 @@ public class Users implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return password != null ? password : "";
     }
 
     public void setPassword(String password) {
@@ -103,7 +103,7 @@ public class Users implements UserDetails {
     }
 
     public String getE_mail() {
-        return e_mail;
+        return e_mail != null ? e_mail : "";
     }
 
     public void setE_mail(String e_mail) {
@@ -111,7 +111,7 @@ public class Users implements UserDetails {
     }
 
     public String getFirst_name() {
-        return first_name;
+        return first_name != null ? first_name : "";
     }
 
     public void setFirst_name(String first_name) {
@@ -119,7 +119,7 @@ public class Users implements UserDetails {
     }
 
     public String getLast_name() {
-        return last_name;
+        return last_name != null ? last_name : "";
     }
 
     public void setLast_name(String last_name) {
@@ -127,7 +127,7 @@ public class Users implements UserDetails {
     }
 
     public String getSecond_name() {
-        return second_name;
+        return second_name != null ? second_name : "";
     }
 
     public void setSecond_name(String second_name) {
@@ -135,7 +135,7 @@ public class Users implements UserDetails {
     }
 
     public String getAbout_me() {
-        return about_me;
+        return about_me != null ? about_me : "";
     }
 
     public void setAbout_me(String about_me) {

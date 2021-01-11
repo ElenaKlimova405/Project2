@@ -3,6 +3,7 @@ package com.tasktracker.tasks.controllers;
 import com.tasktracker.tasks.models.Users;
 import com.tasktracker.tasks.repo.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,17 +26,24 @@ public class UsersController {
         return "users-main";
     }
 
-    @GetMapping("/users/add")
-    public String tasksAdd(Model model) {
-        return "users-add";
-    }
-
-  @PostMapping("/users/add")
-    public String usersPostAdd(@RequestParam String first_name, @RequestParam String last_name, @RequestParam String second_name, @RequestParam String e_mail, @RequestParam String about_me, Model model) {
-        Users users = new Users(null, null, true, null, e_mail, first_name, last_name, second_name, about_me, null, null);
-        usersRepository.save(users); // сохранение нового объекта
-        return "redirect:/users";
-    }
+//    @GetMapping("/users/add")
+//    public String tasksAdd(Model model) {
+//        return "users-add";
+//    }
+//
+//    @PostMapping("/users/add")
+//    public String usersPostAdd(@RequestParam(required = true) String username,
+//                               @RequestParam(required = true) String password,
+//                               @RequestParam(required = false) String first_name,
+//                               @RequestParam(required = false) String last_name,
+//                               @RequestParam(required = false) String second_name,
+//                               @RequestParam(required = false) String e_mail,
+//                               @RequestParam(required = false) String about_me,
+//                               Model model) {
+//        Users users = new Users(username, password, true, null, e_mail, first_name, last_name, second_name, about_me, null, null);
+//        usersRepository.save(users); // сохранение нового объекта
+//        return "redirect:/users/" + users.getUser_id();
+//    }
 
     @GetMapping("/users/{id}")
     public String usersDetails(@PathVariable(value = "id") long idParam, Model model) {
@@ -47,6 +55,12 @@ public class UsersController {
         user.ifPresent(current_user::add);
         model.addAttribute("current_user", current_user);
         return "users-details";
+    }
+
+
+    @GetMapping("/users/my_account")
+    public String usersGetMyAccount(@AuthenticationPrincipal Users user, Model model) {
+        return "redirect:/users/" + user.getUser_id();
     }
 
     @GetMapping("/users/{id}/edit")
@@ -70,13 +84,29 @@ public class UsersController {
         user.setE_mail(e_mail);
         user.setAbout_me(about_me);
         usersRepository.save(user);
+        return "redirect:/users/" + user.getUser_id();
+    }
+
+    @GetMapping("/users/{id}/remove")
+    public String usersGetRemove(@PathVariable(value = "id") long id, Model model) {
+        Users user = usersRepository.findById(id).orElseThrow();
+        usersRepository.delete(user);
         return "redirect:/users";
     }
 
-    @PostMapping("/users/{id}/remove")
-    public String usersPostDelete(@PathVariable(value = "id") long id, Model model) {
+    @GetMapping("/users/{id}/activate")
+    public String usersGetActivate(@PathVariable(value = "id") long id, Model model) {
         Users user = usersRepository.findById(id).orElseThrow();
-        usersRepository.delete(user);
+        user.setActive(true);
+        usersRepository.save(user);
+        return "redirect:/users";
+    }
+
+    @GetMapping("/users/{id}/deactivate")
+    public String usersGetDeactivate(@PathVariable(value = "id") long id, Model model) {
+        Users user = usersRepository.findById(id).orElseThrow();
+        user.setActive(false);
+        usersRepository.save(user);
         return "redirect:/users";
     }
 }

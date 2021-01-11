@@ -35,30 +35,30 @@ public class MainController {
         return "about";
     }
 
-   @GetMapping("/login")
+    @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("someAttribute", "Сюда можно вставить имя пользователя");
         return "login";
     }
 
-   /* @PostMapping("@{/login}")
-    public String loginPost(@RequestParam(required=true) String username, @RequestParam(required=true) String password, Model model) {
-        if (usersRepository.findByUsername(username) == null) {
-            model.addAttribute("param.error", "Неверный логин или пароль!");
-            return "login";
-        }
-        Users user = usersRepository.findByUsername(username);
-        if (!password.equals(user.getPassword())) {
-            model.addAttribute("param.error", "Неверный логин или пароль!");
-            return "login";
-        }
+    /* @PostMapping("@{/login}")
+     public String loginPost(@RequestParam(required=true) String username, @RequestParam(required=true) String password, Model model) {
+         if (usersRepository.findByUsername(username) == null) {
+             model.addAttribute("param.error", "Неверный логин или пароль!");
+             return "login";
+         }
+         Users user = usersRepository.findByUsername(username);
+         if (!password.equals(user.getPassword())) {
+             model.addAttribute("param.error", "Неверный логин или пароль!");
+             return "login";
+         }
 
-        user.setActive(true);
-        model.addAttribute("userLogIn", user);
+         user.setActive(true);
+         model.addAttribute("userLogIn", user);
 
-        return "redirect:/";
-    }
-*/
+         return "redirect:/";
+     }
+ */
     @GetMapping("/registration")
     public String registration(/*@RequestParam(name="name", required=false, defaultValue="World") String name, */Model model) {
         model.addAttribute("someAttribute", "Сюда можно вставить имя пользователя");

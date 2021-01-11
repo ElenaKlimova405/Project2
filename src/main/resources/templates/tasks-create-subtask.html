@@ -2,13 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <!--    <title>Getting Started: Serving Web Content</title>-->
-    <title th:text="'TASK TRACKER - Добавление задачи'" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="'TASK TRACKER - Добавление задачи'"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
 </head>
-
-
-
 
 
 <body>
@@ -23,18 +20,17 @@
 </div>
 
 
-<div class="container mt-5 mb-5" >
+<div class="container mt-5 mb-5">
     <h1 th:text="'Добавление подзадачи к задаче ' + ${parent.getTask_name}"/>
-    <form th:action="'/tasks/' + ${parent.task_id} + '/create_subtask'" method="post">
+    <form th:action="'/tasks/' + ${parent.getTask_id} + '/create_subtask'" method="post">
         <input type="text" name="task_name" placeholder="Введите название подзадачи" class="form-control"><br>
         <input type="text" name="task_preview" placeholder="Введите превью подзадачи" class="form-control"><br>
-        <textarea name="task_description" placeholder="Введите полное описание подзадачи" class="form-control"></textarea><br>
-        <button type="submit" class="btn btn-success">Добавить подзадачу</button><br>
+        <textarea name="task_description" placeholder="Введите полное описание подзадачи"
+                  class="form-control"></textarea><br>
+        <button type="submit" class="btn btn-success">Добавить подзадачу</button>
+        <br>
     </form>
 </div>
-
-
-
 
 
 <div th:insert="blocks/footer :: footer">
