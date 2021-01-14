@@ -23,28 +23,28 @@
 
 <div class="container mt-5">
     <h1>Подробнее о пользователе</h1>
-    <div th:each="elem : ${current_user}" class="alert alert-info mt-2">
+    <div th:each="elem : ${currentUser}" class="alert alert-info mt-2">
         <h3 th:text="'Логин: ' + ${elem.username}"/>
         <p th:text="'Пароль: ' + ${elem.password}"/>
         <p th:text="'Роли: '"/>
-        <div th:each="current_role : ${elem.roles}" class="alert alert-primary">
-            <a th:text="${current_role}"/>
+        <div th:each="currentRole : ${elem.roles}" class="alert alert-primary">
+            <a th:text="${currentRole}"/>
         </div>
         <p th:text="'Активный аккаунт: ' + ${elem.active}"/>
 
-        <p th:text="'Фамилия: ' + ${elem.last_name}"/>
-        <p th:text="'Имя: ' + ${elem.first_name}"/>
-        <p th:text="'Отчество: ' + ${elem.second_name}"/>
-        <p th:text="'e_mail: ' + ${elem.e_mail}"/>
-        <p th:text="'Обо мне: ' + ${elem.about_me}"/>
-        <!--            <p th:text="'Созданные задания: ' + ${elem.created_tasks}"/>-->
+        <p th:text="'Фамилия: ' + ${elem.lastName}"/>
+        <p th:text="'Имя: ' + ${elem.firstName}"/>
+        <p th:text="'Отчество: ' + ${elem.secondName}"/>
+        <p th:text="'eMail: ' + ${elem.eMail}"/>
+        <p th:text="'Обо мне: ' + ${elem.aboutMe}"/>
+        <!--            <p th:text="'Созданные задания: ' + ${elem.createdTasks}"/>-->
         <p th:text="'Созданные задания: '"/>
-        <div th:each="current_task : ${elem.created_tasks}" class="alert alert-primary">
-            <a th:href="'/tasks/' + ${current_task.task_id}" class="alert-link">[[${current_task.task_name}]]</a>
+        <div th:each="currentTask : ${elem.createdTasks}" class="alert alert-primary">
+            <a th:href="'/tasks/' + ${currentTask.taskId}" class="alert-link">[[${currentTask.taskName}]]</a>
         </div>
         <p th:text="'Взятые задания: ' "/>
-        <div th:each="selected_task : ${elem.selected_tasks}" class="alert alert-primary">
-            <a th:href="'/tasks/' + ${selected_task.task_id}" class="alert-link">[[${selected_task.task_name}]]</a>
+        <div th:each="selectedTask : ${elem.selectedTasks}" class="alert alert-primary">
+            <a th:href="'/tasks/' + ${selectedTask.taskId}" class="alert-link">[[${selectedTask.taskName}]]</a>
         </div>
         <br>
 
@@ -52,14 +52,14 @@
         <!--    todo    "выше еще будет написана дата выполнения задания, если есть"-->
 
 
-        <a th:href="'/users/' + ${elem.user_id} + '/edit'" class="btn btn-warning">Редактировать аккаунт</a><br><br>
-        <form th:action="'/users/' + ${elem.user_id} + '/activate'" method="post">
+        <a th:href="'/users/' + ${elem.userId} + '/edit'" class="btn btn-warning">Редактировать аккаунт</a><br><br>
+        <form th:action="'/users/' + ${elem.userId} + '/activate'" method="post">
             <button class="btn btn-danger" type="submit">Активировать аккаунт</button>
         </form><br>
-        <form th:action="'/users/' + ${elem.user_id} + '/deactivate'" method="post">
+        <form th:action="'/users/' + ${elem.userId} + '/deactivate'" method="post">
             <button class="btn btn-danger" type="submit">Деактивировать аккаунт</button>
         </form><br>
-        <form th:action="'/users/' + ${elem.user_id} + '/remove'" method="post">
+        <form th:action="'/users/' + ${elem.userId} + '/remove'" method="post">
             <button class="btn btn-danger" type="submit">Удалить аккаунт</button>
         </form>
 

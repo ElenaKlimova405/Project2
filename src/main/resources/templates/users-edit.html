@@ -24,16 +24,16 @@
     <h1>Редактирование пользователя</h1>
     <div th:each="el : ${user}" }>
         <form method="post">
-            <input type="text" th:value="${el.first_name}" name="first_name" placeholder="Введите имя пользователя"
+            <input type="text" th:value="${el.firstName}" name="firstName" placeholder="Введите имя пользователя"
                    class="form-control"><br>
-            <input type="text" th:value="${el.last_name}" name="last_name" placeholder="Введите фамилию пользователя"
+            <input type="text" th:value="${el.lastName}" name="lastName" placeholder="Введите фамилию пользователя"
                    class="form-control"><br>
-            <input type="text" th:value="${el.second_name}" name="second_name"
+            <input type="text" th:value="${el.secondName}" name="secondName"
                    placeholder="Введите отчество пользователя" class="form-control"><br>
-            <input type="email" th:value="${el.e_mail}" name="e_mail" placeholder="Введите e_mail"
+            <input type="email" th:value="${el.eMail}" name="eMail" placeholder="Введите eMail"
                    class="form-control"><br>
-            <textarea name="about_me" placeholder="Заполните поле 'О себе'" class="form-control"
-                      th:text="${el.about_me}"/><br>
+            <textarea name="aboutMe" placeholder="Заполните поле 'О себе'" class="form-control"
+                      th:text="${el.aboutMe}"/><br>
             <button type="submit" class="btn btn-success">Обновить информацию о пользователе</button>
             <br>
         </form>

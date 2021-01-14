@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <!--    <title>Getting Started: Serving Web Content</title>-->
-    <title th:text="'TASK TRACKER - Редактирование задачи'"/>
+    <title th:text="'TASK TRACKER - Установка планируемого времени работы над заданием'"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
 </head>
@@ -20,19 +20,17 @@
 
 
 <div class="container mt-5 mb-5">
-    <h1>Редактирование задачи</h1>
-    <div th:each="el : ${task}" }>
+    <h1>Установка планируемого времени работы над заданием</h1>
         <form method="post">
-            <input type="text" th:value="${el.getTaskName}" name="taskName" placeholder="Введите название задачи"
+            <input type="text" name="days" placeholder="Введите количество дней"
                    class="form-control"><br>
-            <input type="text" th:value="${el.getTaskPreview}" name="taskPreview" placeholder="Введите превью задачи"
+            <input type="text" name="hours" placeholder="Введите количество часов"
                    class="form-control"><br>
-            <textarea name="taskDescription" placeholder="Введите полное описание задачи" class="form-control"
-                      th:text="${el.getTaskDescription}"/><br>
-            <button type="submit" class="btn btn-success">Обновить задачу</button>
+            <input type="text" name="minutes" placeholder="Введите количество минут"
+                   class="form-control"><br>
+            <button type="submit" class="btn btn-success">Задать время</button>
             <br>
         </form>
-    </div>
 </div>
 
 

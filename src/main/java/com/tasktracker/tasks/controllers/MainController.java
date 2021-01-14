@@ -3,6 +3,7 @@ package com.tasktracker.tasks.controllers;
 import com.tasktracker.tasks.models.Roles;
 import com.tasktracker.tasks.models.Users;
 import com.tasktracker.tasks.repo.UsersRepository;
+import com.tasktracker.tasks.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 //import org.springframework.web.bind.annotation.RequestParam;
 
@@ -19,6 +21,8 @@ public class MainController {
     private final UsersRepository usersRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UsersService usersService;
 
 
     @Autowired
@@ -42,6 +46,7 @@ public class MainController {
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("someAttribute", "Сюда можно вставить имя пользователя");
+//        usersService.checkAdminAccount();
         return "login";
     }
 
@@ -74,7 +79,7 @@ public class MainController {
             Model model,
             Users user
     ) {
-
+//        usersService.checkAdminAccount();
         Users userFromDb = usersRepository.findByUsername(user.getUsername());
 
         if (userFromDb != null) {

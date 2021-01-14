@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--    <title>Getting Started: Serving Web Content</title>-->
+    <title th:text="'TASK TRACKER - Статистика времени по подзадачам'"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+</head>
+
+
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div th:if="${param.error}">
+    Invalid username and password.
+</div>
+<div th:if="${param.logout}">
+    You have been logged out.
+</div>
+
+
+<div class="container mt-5 mb-5">
+    <h1>Статистика времени по подзадачам</h1><br>
+<!--    <div th:each="el : ${task}" }>-->
+
+
+<!--    </div>-->
+    <div class="container">
+        <table class="table table-hover">
+
+            <thead>
+            <tr>
+                <th>Задача</th>
+                <th>Планируемое время работы над задачей</th>
+                <th>Фактическое время работы над задачей</th>
+            </tr>
+            </thead>
+
+
+            <tbody>
+            <tr>
+                <td>John</td>
+                <td>Doe</td>
+                <td>john@example.com</td>
+            </tr>
+            <tr>
+                <td>Mary</td>
+                <td>Moe</td>
+                <td>mary@example.com</td>
+            </tr>
+            <tr>
+                <td>July</td>
+                <td>Dooley</td>
+                <td>july@example.com</td>
+            </tr>
+            </tbody>
+
+
+            <thead class="thead-light">
+            <tr>
+                <th>Сумма</th>
+                <th>SUM</th>
+                <th>SUM</th>
+            </tr>
+            </thead>
+
+
+            <table class="table table-hover">
+            <tr class="table-success">
+                <td>Success</td>
+            </tr>
+            </table>
+
+        </table>
+    </div>
+
+
+</div>
+
+
+<div th:insert="blocks/footer :: footer"></div>
+
+</body>
+</html>

@@ -22,52 +22,66 @@
 
 <div class="container mt-5">
     <h1>Подробнее о задаче</h1>
-    <div th:each="elem : ${current_task}" class="alert alert-info mt-2">
-        <h3 th:text="${elem.getTask_name}"/>
-        <p th:text="${elem.getTask_preview}"/>
+    <div th:each="elem : ${currentTask}" class="alert alert-info mt-2">
+        <h3 th:text="${elem.getTaskName}"/>
+        <p th:text="${elem.getTaskPreview}"/>
 
         <p th:text="'Является подзаданием для: '"/>
-        <div th:each="current_parent_task : ${elem.getParent_task}" class="alert alert-primary">
-            <a th:href="'/tasks/' + ${current_parent_task.getTask_id}" class="alert-link">[[${current_parent_task.task_name}]]</a>
+<!--        гармошка-->
+        <div th:each="currentParentTask : ${elem.getParentTask}" class="alert alert-primary">
+            <a th:href="'/tasks/' + ${currentParentTask.getTaskId}" class="alert-link">[[${currentParentTask.taskName}]]</a>
         </div>
         <br>
 
         <p th:text="'Содержит подзадания: '"/>
-        <div th:each="current_child_task : ${children}" class="alert alert-primary">
-            <a th:href="'/tasks/' + ${current_child_task.getTask_id}" class="alert-link">[[${current_child_task.task_name}]]</a>
+        <div th:each="currentChildTask : ${children}" class="alert alert-primary">
+            <a th:href="'/tasks/' + ${currentChildTask.getTaskId}" class="alert-link">[[${currentChildTask.taskName}]]</a>
         </div>
         <br>
 
         <p th:text="'Автор задания: '"/>
-        <div th:each="current_author : ${elem.getAuthor}" class="alert alert-primary">
-            <a th:href="'/users/' + ${current_author.getUser_id}" class="alert-link">[[${current_author.username}]]</a>
+        <div th:each="currentAuthor : ${elem.getAuthor}" class="alert alert-primary">
+            <a th:href="'/users/' + ${currentAuthor.getUserId}" class="alert-link">[[${currentAuthor.username}]]</a>
         </div>
         <br>
 
         <p th:text="'Пользователь, взявший задание: '"/>
-        <div th:each="current_user_selected_the_task : ${elem.getUser_selected_the_task}" class="alert alert-primary">
-            <a th:href="'/users/' + ${current_user_selected_the_task.getUser_id}" class="alert-link">[[${current_user_selected_the_task.username}]]</a>
+        <div th:each="currentUserSelectedTheTask : ${elem.getUserSelectedTheTask}" class="alert alert-primary">
+            <a th:href="'/users/' + ${currentUserSelectedTheTask.getUserId}" class="alert-link">[[${currentUserSelectedTheTask.username}]]</a>
         </div>
         <br>
 
-        <p th:text="'Дата взятия задания: ' + ${elem.getTaking_time}"/>
-        <p th:text="'Дата выполнения задания: ' + ${elem.getCompletion_time}"/>
-        <p th:text="'Потраченное время: ' + ${elem.getBusy_time}"/>
+        <div>
+            <div>
+                <p th:text="'Планируемое время работы над заданием: ' + ${elem.plannedTime.days} + ' дней ' + ${elem.plannedTime.hours} + ' часов ' + ${elem.plannedTime.minutes} + ' минут '"/>
+                <a th:href="'/tasks/' + ${elem.getTaskId} + '/set_planned_time'" class="btn btn-info">Установить</a><br><br>
+            </div>
+            <div>
+                <p th:text="'Фактическое время работы над заданием: ' + ${elem.actualTime.days} + ' дней ' + ${elem.actualTime.hours} + ' часов ' + ${elem.actualTime.minutes} + ' минут '"/>
+                <a th:href="'/tasks/' + ${elem.getTaskId} + '/add_actual_time'" class="btn btn-info">Прибавить время</a><br><br>
+                <a th:href="'/tasks/' + ${elem.getTaskId} + '/change_actual_time'" class="btn btn-info">Редактировать</a><br><br>
+            </div>
+            <a th:href="'/tasks/' + ${elem.getTaskId} + '/statistics'" class="btn btn-info">Показать статистику</a><br><br>
+        </div>
 
         <p><b>Просмотры: </b><span th:text="${elem.getViews}"/></p><br>
-        <p th:text="'Полное описание: ' + ${elem.getTask_description}"/><br><br>
+        <p th:text="'Полное описание: ' + ${elem.getTaskDescription}"/><br><br>
 
-        <a th:href="'/tasks/' + ${elem.getTask_id} + '/create_subtask'" class="btn btn-info">Cоздать подзадачу</a><br><br>
-        <a th:href="'/tasks/' + ${elem.getTask_id} + '/get_task'" class="btn btn-info">Взять задачу</a><br><br>
-        <a th:href="'/tasks/' + ${elem.getTask_id} + '/get_task_cancel'" class="btn btn-warning">Отказаться от
-            задачи</a><br><br>
-        <a th:href="'/tasks/' + ${elem.getTask_id} + '/mark_solved'" class="btn btn-info">Отметить решенной</a><br><br>
 
-        <a th:href="'/tasks/' + ${elem.getTask_id} + '/edit'" class="btn btn-warning">Редактировать</a><br><br>
-        <a th:href="'/tasks/' + ${elem.getTask_id} + '/remove'" class="btn btn-danger">Удалить</a>
-        <!--            <form th:action="'/tasks/' + ${elem.task_id} + '/remove'" method="post">-->
-        <!--                <button class="btn btn-danger" type="submit">Удалить</button>     &lt;!&ndash;            <a th:href="'/blog/' + ${elem.id} + '/remove'" class="btn btn-warning">И кнопочка Удалить...</a>&ndash;&gt;-->
-        <!--            </form>-->
+
+
+
+
+        <a th:href="'/tasks/' + ${elem.getTaskId} + '/get_task'" class="btn btn-info">Взять задачу</a><br><br>
+        <a th:href="'/tasks/' + ${elem.getTaskId} + '/get_task_cancel'" class="btn btn-warning">Отказаться от задачи</a><br><br>
+
+
+        <a th:href="'/tasks/' + ${elem.getTaskId} + '/create_subtask'" class="btn btn-info">Создать подзадачу</a><br><br>
+        <a th:href="'/tasks/' + ${elem.getTaskId} + '/edit'" class="btn btn-warning">Редактировать</a><br><br>
+        <a th:href="'/tasks/' + ${elem.getTaskId} + '/remove'" class="btn btn-danger">Удалить</a>
+
+
+
 
 
     </div>

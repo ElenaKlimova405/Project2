@@ -1,7 +1,5 @@
 package com.tasktracker.tasks.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,9 +11,13 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class Users implements UserDetails {
+//    @Id
+//    @SequenceGenerator(name = "userIdSequenceGen",
+//            sequenceName="userIdSequence", initialValue = 2)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userIdSequenceGen")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long user_id;
+    private Long userId;
     //@NonNull
     @Column(unique = true)
     private String username;
@@ -23,51 +25,51 @@ public class Users implements UserDetails {
     private String password;
     private boolean active = true;
     @ElementCollection(targetClass = Roles.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "userRole", joinColumns = @JoinColumn(name = "userId"))
     @Enumerated(EnumType.STRING)
     private Set<Roles> roles;
 
-    private String e_mail;
+    private String eMail;
     private String activationCode;
 
     //@NonNull
-    private String first_name;
-    private String last_name;
-    private String second_name;
-    private String about_me;
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL/*, orphanRemoval = true*/)
+    private String firstName;
+    private String lastName;
+    private String secondName;
+    private String aboutMe;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     //@JsonIgnore
-    @Column(name = "created_task_id")
-    private List<Tasks> created_tasks;
-    @OneToMany(mappedBy = "user_selected_the_task", cascade = CascadeType.ALL/*, orphanRemoval = true*/)
+    @Column(name = "createdTaskId")
+    private List<Tasks> createdTasks;
+    @OneToMany(mappedBy = "userSelectedTheTask"/*, cascade = CascadeType.ALL, orphanRemoval = true*/)
     //@JsonIgnore
-    @Column(name = "selected_task_id")
-    private List<Tasks> selected_tasks;
+    @Column(name = "selectedTaskId")
+    private List<Tasks> selectedTasks;
 
     public Users() {
     }
 
 
-    public Users(String username, String password, boolean active, Set<Roles> roles, String e_mail, String first_name, String last_name, String second_name, String about_me, List<Tasks> created_tasks, List<Tasks> selected_tasks) {
+    public Users(String username, String password, boolean active, Set<Roles> roles, String eMail, String firstName, String lastName, String secondName, String aboutMe, List<Tasks> createdTasks, List<Tasks> selectedTasks) {
         this.username = username;
         this.password = password;
         this.active = active;
         this.roles = roles;
-        this.e_mail = e_mail;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.second_name = second_name;
-        this.about_me = about_me;
-        this.created_tasks = created_tasks;
-        this.selected_tasks = selected_tasks;
+        this.eMail = eMail;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.secondName = secondName;
+        this.aboutMe = aboutMe;
+        this.createdTasks = createdTasks;
+        this.selectedTasks = selectedTasks;
     }
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -104,12 +106,12 @@ public class Users implements UserDetails {
         this.roles = roles;
     }
 
-    public String getE_mail() {
-        return e_mail != null ? e_mail : "";
+    public String getEMail() {
+        return eMail != null ? eMail : "";
     }
 
-    public void setE_mail(String e_mail) {
-        this.e_mail = e_mail;
+    public void setEMail(String eMail) {
+        this.eMail = eMail;
     }
 
     public String getActivationCode() {
@@ -120,53 +122,54 @@ public class Users implements UserDetails {
         this.activationCode = activationCode;
     }
 
-    public String getFirst_name() {
-        return first_name != null ? first_name : "";
+    public String getFirstName() {
+        return firstName != null ? firstName : "";
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLast_name() {
-        return last_name != null ? last_name : "";
+    public String getLastName() {
+        return lastName != null ? lastName : "";
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getSecond_name() {
-        return second_name != null ? second_name : "";
+    public String getSecondName() {
+        return secondName != null ? secondName : "";
     }
 
-    public void setSecond_name(String second_name) {
-        this.second_name = second_name;
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
     }
 
-    public String getAbout_me() {
-        return about_me != null ? about_me : "";
+    public String getAboutMe() {
+        return aboutMe != null ? aboutMe : "";
     }
 
-    public void setAbout_me(String about_me) {
-        this.about_me = about_me;
+    public void setAboutMe(String aboutMe) {
+        this.aboutMe = aboutMe;
     }
 
-    public List<Tasks> getCreated_tasks() {
-        return created_tasks;
+    public List<Tasks> getCreatedTasks() {
+        return createdTasks;
     }
 
-    public void setCreated_tasks(List<Tasks> created_tasks) {
-        this.created_tasks = created_tasks;
+    public void setCreatedTasks(List<Tasks> createdTasks) {
+        this.createdTasks = createdTasks;
     }
 
-    public List<Tasks> getSelected_tasks() {
-        return selected_tasks;
+    public List<Tasks> getSelectedTasks() {
+        return selectedTasks;
     }
 
-    public void setSelected_tasks(List<Tasks> selected_tasks) {
-        this.selected_tasks = selected_tasks;
+    public void setSelectedTasks(List<Tasks> selectedTasks) {
+        this.selectedTasks = selectedTasks;
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -193,4 +196,20 @@ public class Users implements UserDetails {
         return this.isActive();
     }
 
+    public boolean equalsdLoginAndPasswordAndRole(Users user) {
+        if (
+                user != null &&
+                this.getUsername().equals(user.getUsername()) &&
+                this.getPassword().equals(user.getPassword())
+        ) {
+            for (Roles role : this.getRoles()) {
+                if (
+                        user.getRoles().containsAll(this.getRoles())
+                ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

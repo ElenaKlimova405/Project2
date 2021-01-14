@@ -8,9 +8,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TasksRepository extends CrudRepository<Tasks, Long> {
-    @Query("SELECT t FROM Tasks t WHERE t.parent_task = :task ORDER BY t.task_id")
+    @Query("SELECT t FROM Tasks t WHERE t.parentTask = :task ORDER BY t.taskId")
     List<Tasks> findChildren(@Param("task") Tasks task);
 
-    @Query("SELECT t FROM Tasks t WHERE t.parent_task = NULL ORDER BY t.task_id")
+    @Query("SELECT t FROM Tasks t WHERE t.parentTask = NULL ORDER BY t.taskId")
     List<Tasks> findParents();
 }

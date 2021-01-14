@@ -25,10 +25,9 @@
     <h1>Список пользователей</h1>
     <div th:each="elem : ${users}" class="alert alert-info mt-2">
         <h2 th:text="${elem.getUsername}"/>
-        <h3 th:text="${elem.getFirst_name} + ' ' + ${elem.getLast_name} + ' ' + ${elem.getSecond_name}"/>
-        <!--        <p th:text="${elem.role.role_name}"/>-->
-        <h4 th:text="${elem.getE_mail}"/>
-        <a th:href="'/users/' + ${elem.user_id}" class="btn btn-info">Подробнее</a>
+        <h3 th:text="${elem.getFirstName} + ' ' + ${elem.getLastName} + ' ' + ${elem.getSecondName}"/>
+        <h4 th:text="${elem.getEMail}"/>
+        <br><a th:href="'/users/' + ${elem.userId}" class="btn btn-info">Подробнее</a>
         <!--        <a th:href="'/users/1'" class="btn btn-warning">Посмотреть детальнее...</a>-->
     </div>
 </div>

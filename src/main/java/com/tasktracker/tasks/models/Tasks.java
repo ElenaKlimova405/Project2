@@ -1,6 +1,5 @@
 package com.tasktracker.tasks.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -10,85 +9,83 @@ import javax.persistence.*;
 public class Tasks {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long task_id;
+    private Long taskId;
     @NonNull
-    private String task_name;
-    private String task_preview;
-    private String task_description;
+    private String taskName;
+    private String taskPreview;
+    private String taskDescription;
     private Long views = 0L;
     @OneToOne(fetch = FetchType.EAGER)
     /*@JsonIgnore*/
-    //@JoinColumn(name = "user_id")
-    @JoinColumn(name = "parent_task_id")
-    //@Column(name = "parent_task_id")
-    private Tasks parent_task;
+    @JoinColumn(name = "parentTaskId")
+    private Tasks parentTask;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "authorId")
     //@NonNull
-    //@JoinColumn(name = "user_id")
-    //@Column(name = "author_id")
     /*@JsonIgnore*/
     private Users author;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_selected_the_task_id")
+    @JoinColumn(name = "userSelectedTheTaskId")
     /*@JsonIgnore*/
-    //@JoinColumn(name = "user_id")
-    //@Column(name = "user_selected_the_task_id")
-    private Users user_selected_the_task;
-    private String taking_time;
-    private String completion_time;
-    private String busy_time;
+    private Users userSelectedTheTask;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "plannedTimeId")
+    private Timer plannedTime;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "actualTimeId")
+    private Timer actualTime;
+
 
     public Tasks() {
     }
 
-    public Tasks(String task_name, String task_preview, String task_description, /*Long views, */Tasks parent_task, Users author, Users user_selected_the_task, String taking_time, String completion_time, String busy_time) {
-        this.task_name = task_name;
-        this.task_preview = task_preview;
-        this.task_description = task_description;
-        //this.views = views;
-        this.parent_task = parent_task;
+    public Tasks(@NonNull String taskName, String taskPreview, String taskDescription, Long views, Tasks parentTask, Users author, Users userSelectedTheTask, Timer plannedTime, Timer actualTime) {
+        this.taskName = taskName;
+        this.taskPreview = taskPreview;
+        this.taskDescription = taskDescription;
+        this.views = views;
+        this.parentTask = parentTask;
         this.author = author;
-        this.user_selected_the_task = user_selected_the_task;
-        this.taking_time = taking_time;
-        this.completion_time = completion_time;
-        this.busy_time = busy_time;
+        this.userSelectedTheTask = userSelectedTheTask;
+        this.plannedTime = plannedTime;
+        this.actualTime = actualTime;
     }
 
     public void incrementViews() {
         this.views++;
     }
 
-    public Long getTask_id() {
-        return task_id;
+    public Long getTaskId() {
+        return taskId;
     }
 
-    public void setTask_id(Long task_id) {
-        this.task_id = task_id;
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 
-    public String getTask_name() {
-        return task_name != null ? task_name : "";
+    public String getTaskName() {
+        return taskName != null ? taskName : "";
     }
 
-    public void setTask_name(String task_name) {
-        this.task_name = task_name;
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
     }
 
-    public String getTask_preview() {
-        return task_preview != null ? task_preview : "";
+    public String getTaskPreview() {
+        return taskPreview != null ? taskPreview : "";
     }
 
-    public void setTask_preview(String task_preview) {
-        this.task_preview = task_preview;
+    public void setTaskPreview(String taskPreview) {
+        this.taskPreview = taskPreview;
     }
 
-    public String getTask_description() {
-        return task_description != null ? task_description : "";
+    public String getTaskDescription() {
+        return taskDescription != null ? taskDescription : "";
     }
 
-    public void setTask_description(String task_description) {
-        this.task_description = task_description;
+    public void setTaskDescription(String taskDescription) {
+        this.taskDescription = taskDescription;
     }
 
     public Long getViews() {
@@ -99,12 +96,12 @@ public class Tasks {
         this.views = views;
     }
 
-    public Tasks getParent_task() {
-        return parent_task;
+    public Tasks getParentTask() {
+        return parentTask;
     }
 
-    public void setParent_task(Tasks parent_task) {
-        this.parent_task = parent_task;
+    public void setParentTask(Tasks parentTask) {
+        this.parentTask = parentTask;
     }
 
     public Users getAuthor() {
@@ -115,35 +112,27 @@ public class Tasks {
         this.author = author;
     }
 
-    public Users getUser_selected_the_task() {
-        return user_selected_the_task;
+    public Users getUserSelectedTheTask() {
+        return userSelectedTheTask;
     }
 
-    public void setUser_selected_the_task(Users user_selected_the_task) {
-        this.user_selected_the_task = user_selected_the_task;
+    public void setUserSelectedTheTask(Users userSelectedTheTask) {
+        this.userSelectedTheTask = userSelectedTheTask;
     }
 
-    public String getTaking_time() {
-        return taking_time != null ? taking_time : "";
+    public Timer getPlannedTime() {
+        return plannedTime;
     }
 
-    public void setTaking_time(String taking_time) {
-        this.taking_time = taking_time;
+    public void setPlannedTime(Timer plannedTime) {
+        this.plannedTime = plannedTime;
     }
 
-    public String getCompletion_time() {
-        return completion_time != null ? completion_time : "";
+    public Timer getActualTime() {
+        return actualTime;
     }
 
-    public void setCompletion_time(String completion_time) {
-        this.completion_time = completion_time;
-    }
-
-    public String getBusy_time() {
-        return busy_time != null ? busy_time : "";
-    }
-
-    public void setBusy_time(String busy_time) {
-        this.busy_time = busy_time;
+    public void setActualTime(Timer actualTime) {
+        this.actualTime = actualTime;
     }
 }

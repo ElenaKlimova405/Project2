@@ -5,6 +5,8 @@ import com.tasktracker.tasks.repo.UsersRepository;
 import com.tasktracker.tasks.service.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 public class UsersController {
@@ -51,25 +52,44 @@ public class UsersController {
 //                               Model model) {
 //        Users users = new Users(username, password, true, null, e_mail, first_name, last_name, second_name, about_me, null, null);
 //        usersRepository.save(users); // сохранение нового объекта
-//        return "redirect:/users/" + users.getUser_id();
+//        return "redirect:/users/" + users.getUserId();
 //    }
 
     @GetMapping("/users/{id}")
-    public String usersDetails(@PathVariable(value = "id") long idParam, Model model) {
+    public String usersDetails(@PathVariable(value = "id") long idParam,
+                               Model model) {
         if (!usersRepository.existsById(idParam)) {
             return "redirect:/users";
         }
+        //HttpSession session = httpServletRequest.getSession();
+        //long user_id = (long)session.getAttribute("user_id");
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String  userLogin=null;
+        if (principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+            userLogin = userDetails.getUsername();
+            System.out.println(userLogin);
+        }
+
+
         Optional<Users> user = usersRepository.findById(idParam);
-        ArrayList<Users> current_user = new ArrayList<>();
-        user.ifPresent(current_user::add);
-        model.addAttribute("current_user", current_user);
+        boolean accessTrue = user.get().getUsername().equals(userLogin);
+
+        ArrayList<Users> currentUser = new ArrayList<>();
+        user.ifPresent(currentUser::add);
+        model.addAttribute("currentUser", currentUser);
+
+
+
+
+
         return "users-details";
     }
 
 
     @GetMapping("/users/my_account")
     public String usersGetMyAccount(@AuthenticationPrincipal Users user, Model model) {
-        return "redirect:/users/" + user.getUser_id();
+        return "redirect:/users/" + user.getUserId();
     }
 
     @GetMapping("/users/{id}/edit")
@@ -85,21 +105,27 @@ public class UsersController {
     }
 
     @PostMapping("/users/{id}/edit")
-    public String usersPostUpdate(@PathVariable(value = "id") long id, @RequestParam String first_name, @RequestParam String last_name, @RequestParam String second_name, @RequestParam String e_mail, @RequestParam String about_me, Model model) {
+    public String usersPostUpdate(@PathVariable(value = "id") long id,
+                                  @RequestParam(required = false, defaultValue = "") String firstName,
+                                  @RequestParam(required = false, defaultValue = "") String lastName,
+                                  @RequestParam(required = false, defaultValue = "") String secondName,
+                                  @RequestParam(required = false, defaultValue = "") String eMail,
+                                  @RequestParam(required = false, defaultValue = "") String aboutMe,
+                                  Model model) {
         Users user = usersRepository.findById(id).orElseThrow();
 
-        /*if (!user.getE_mail().equals(e_mail)) {
+        /*if (!user.getEMail().equals(eMail)) {
             user.setActivationCode(UUID.randomUUID().toString());
         }*/
 
-        user.setFirst_name(first_name);
-        user.setLast_name(last_name);
-        user.setSecond_name(second_name);
-        user.setE_mail(e_mail);
-        user.setAbout_me(about_me);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setSecondName(secondName);
+        user.setEMail(eMail);
+        user.setAboutMe(aboutMe);
         usersRepository.save(user);
 
-        /*if (!user.getE_mail().isEmpty() && user.getE_mail() != null) {
+        /*if (!user.getEMail().isEmpty() && user.getEMail() != null) {
             String message = String.format(
                 "Hello, %s! \n" +
                         "Welcome to Task tracker! Please, visit next link: http://localhost:8080/activate/%s",
@@ -107,13 +133,13 @@ public class UsersController {
                     user.getActivationCode()
 
             );
-            mailSender.send(user.getE_mail(), "Activation code", message);
+            mailSender.send(user.getEMail(), "Activation code", message);
         }*/
 
-        return "redirect:/users/" + user.getUser_id();
+        return "redirect:/users/" + user.getUserId();
     }
 
-    @GetMapping("/users/{id}/remove")
+    @PostMapping("/users/{id}/remove")
     public String usersGetRemove(@PathVariable(value = "id") long id, Model model) {
         Users user = usersRepository.findById(id).orElseThrow();
         usersRepository.delete(user);
