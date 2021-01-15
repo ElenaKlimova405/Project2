@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
@@ -76,20 +77,28 @@ public class MainController {
 
     @PostMapping("/registration")
     public String AddUser(/*@RequestParam(name="name", required=false, defaultValue="World") String name,*/
-            Model model,
-            Users user
+            @RequestParam(required = true) String username,
+            @RequestParam(required = true) String password,
+            @RequestParam(required = true) String password2,
+            Model model
     ) {
-//        usersService.checkAdminAccount();
-        Users userFromDb = usersRepository.findByUsername(user.getUsername());
+        Users userFromDb = usersRepository.findByUsername(username);
 
         if (userFromDb != null) {
             model.addAttribute("message", "Данный логин уже занят");
             return "registration";
         }
 
+        if (!password.equals(password2)) {
+            model.addAttribute("message", "Пароли не совпадают");
+            return "registration";
+        }
+
+        Users user = new Users();
+        user.setUsername(username);
         user.setActive(true);
         user.setRoles(Collections.singleton(Roles.USER));
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(password));
         usersRepository.save(user);
 
         return "redirect:/login";

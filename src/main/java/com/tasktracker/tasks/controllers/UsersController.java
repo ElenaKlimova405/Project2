@@ -34,6 +34,7 @@ public class UsersController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @GetMapping("/users")
     public String usersMain(Model model) {
         Iterable<Users> users = usersRepository.findAll();
@@ -117,9 +118,13 @@ public class UsersController {
                                   @RequestParam(required = false, defaultValue = "") String eMail,
                                   @RequestParam(required = false, defaultValue = "") String aboutMe,
 
-                                  @RequestParam(required = false) String userCheckBox,
+                                  //@RequestParam(required = false) String userCheckBox,
                                   @RequestParam(required = false) String programmerCheckBox,
                                   @RequestParam(required = false) String administratorCheckBox,
+
+                                  @RequestParam(required = false) String oldPassword,
+                                  @RequestParam(required = false) String newPassword,
+                                  @RequestParam(required = false) String newPassword2,
 
                                   Model model) {
         Users user = usersRepository.findById(id).orElseThrow();
@@ -136,9 +141,9 @@ public class UsersController {
 
 
         //if (userCheckBox != null) {
-            if (!user.hasRoleUser()) {
-                user.getRoles().add(Roles.USER);
-            }
+        if (!user.hasRoleUser()) {
+            user.getRoles().add(Roles.USER);
+        }
 //        } else {
 //            user.getRoles().remove(Roles.USER);
 //        }
@@ -157,6 +162,18 @@ public class UsersController {
             }
         } else {
             user.getRoles().remove(Roles.ADMINISTRATOR);
+        }
+
+
+        if (!(oldPassword != null && newPassword != null && newPassword2 != null) &&
+                !(oldPassword == null && newPassword == null && newPassword2 == null)) {
+            model.addAttribute("ATTENTION", "Пароли введены неверно");
+        }
+        else {
+            String encodedPassword = passwordEncoder.encode(oldPassword);
+            if (newPassword.equals(newPassword2) && encodedPassword.equals(user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(newPassword));
+            }
         }
 
 
