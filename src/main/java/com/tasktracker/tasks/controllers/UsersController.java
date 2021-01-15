@@ -1,5 +1,6 @@
 package com.tasktracker.tasks.controllers;
 
+import com.tasktracker.tasks.models.Roles;
 import com.tasktracker.tasks.models.Users;
 import com.tasktracker.tasks.repo.UsersRepository;
 import com.tasktracker.tasks.service.MailSender;
@@ -15,8 +16,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.management.relation.RoleList;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Controller
 public class UsersController {
@@ -111,6 +116,11 @@ public class UsersController {
                                   @RequestParam(required = false, defaultValue = "") String secondName,
                                   @RequestParam(required = false, defaultValue = "") String eMail,
                                   @RequestParam(required = false, defaultValue = "") String aboutMe,
+
+                                  @RequestParam(required = false) String userCheckBox,
+                                  @RequestParam(required = false) String programmerCheckBox,
+                                  @RequestParam(required = false) String administratorCheckBox,
+
                                   Model model) {
         Users user = usersRepository.findById(id).orElseThrow();
 
@@ -123,6 +133,33 @@ public class UsersController {
         user.setSecondName(secondName);
         user.setEMail(eMail);
         user.setAboutMe(aboutMe);
+
+
+        //if (userCheckBox != null) {
+            if (!user.hasRoleUser()) {
+                user.getRoles().add(Roles.USER);
+            }
+//        } else {
+//            user.getRoles().remove(Roles.USER);
+//        }
+
+        if (programmerCheckBox != null) {
+            if (!user.hasRoleProgrammer()) {
+                user.getRoles().add(Roles.PROGRAMMER);
+            }
+        } else {
+            user.getRoles().remove(Roles.PROGRAMMER);
+        }
+
+        if (administratorCheckBox != null) {
+            if (!user.hasRoleAdministrator()) {
+                user.getRoles().add(Roles.ADMINISTRATOR);
+            }
+        } else {
+            user.getRoles().remove(Roles.ADMINISTRATOR);
+        }
+
+
         usersRepository.save(user);
 
         /*if (!user.getEMail().isEmpty() && user.getEMail() != null) {

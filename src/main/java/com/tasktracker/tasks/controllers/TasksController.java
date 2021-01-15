@@ -1,5 +1,6 @@
 package com.tasktracker.tasks.controllers;
 
+import com.tasktracker.tasks.additional_classes.Triple;
 import com.tasktracker.tasks.models.Tasks;
 import com.tasktracker.tasks.models.Timer;
 import com.tasktracker.tasks.models.Users;
@@ -99,11 +100,13 @@ public class TasksController {
                                   @RequestParam(required = true) String taskName,
                                   @RequestParam(required = false, defaultValue = "") String taskPreview,
                                   @RequestParam(required = false, defaultValue = "") String taskDescription,
+
                                   Model model) {
         Tasks task = tasksRepository.findById(id).orElseThrow();
         task.setTaskName(taskName);
         task.setTaskPreview(taskPreview);
         task.setTaskDescription(taskDescription);
+
         tasksRepository.save(task);
         return "redirect:/tasks/" + task.getTaskId();
     }
@@ -237,7 +240,7 @@ public class TasksController {
             return "redirect:/tasks";
         }
         Tasks task = tasksRepository.findById(id).orElseThrow();
-        Timer timer = new Timer(days, hours, minutes, task);
+        Timer timer = new Timer(days, hours, minutes, null);
         task.setActualTime(timer);
 
         tasksRepository.save(task); // сохранение нового объекта
@@ -269,9 +272,64 @@ public class TasksController {
     }
 
 
+
+    private void goDFS(Tasks task, Timer plannedTimeSum, Timer actualTimeSum, List<Triple> triples, int number, String item) {
+        List<Tasks> children = tasksRepository.findChildren(task);
+        String newItem = item;
+        if (number != 0) {
+            newItem = newItem + number + '.';
+        }
+        Triple triple = new Triple(newItem, task, children.size() > 0 ? false : true);
+        triples.add(triple);
+
+        if (children.size() == 0) {
+            if (task.getActualTime().getTimeAsMinutes() > 0 && task.getPlannedTime().getTimeAsMinutes() > 0) {
+                plannedTimeSum.addTime(task.getPlannedTime().getDays(),task.getPlannedTime().getHours(), task.getPlannedTime().getMinutes());
+                actualTimeSum.addTime(task.getActualTime().getDays(), task.getActualTime().getHours(), task.getActualTime().getMinutes());
+            }
+        }
+
+        for (int i = 0; i < children.size(); i++) {
+            goDFS(children.get(i), plannedTimeSum, actualTimeSum, triples, i+1, newItem);
+        }
+    }
+
+
+
+
     @GetMapping("/tasks/{id}/statistics")
     public String tasksGetStatistics(@PathVariable(value = "id") long id,
                                         Model model) {
+        if (!tasksRepository.existsById(id)) {
+            return "redirect:/tasks";
+        }
+        Timer plannedTimeSum = new Timer();
+        Timer actualTimeSum = new Timer();
+        List<Triple> triples = new ArrayList<>();
+
+        double plan = 0;
+        Tasks task = tasksRepository.findById(id).orElseThrow();
+        goDFS(task, plannedTimeSum, actualTimeSum, triples, 0, "1.");
+
+
+        if (plannedTimeSum.getTimeAsMinutes() > 0) {
+            plan = 100.0 * actualTimeSum.getTimeAsMinutes()  / plannedTimeSum.getTimeAsMinutes() ;
+        }
+
+        model.addAttribute("triples", triples);
+        model.addAttribute("actualTimeSum", actualTimeSum);
+        model.addAttribute("plannedTimeSum", plannedTimeSum);
+        if (plan < 100) {
+            boolean successAttribute = true;
+            model.addAttribute("successAttribute", successAttribute);
+        }
+        else {
+            boolean warningAttribute = true;
+            model.addAttribute("warningAttribute", warningAttribute);
+        }
+
+        model.addAttribute("plan", plan);
+
         return "tasks-statistics";
     }
 }

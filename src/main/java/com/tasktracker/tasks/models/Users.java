@@ -212,4 +212,37 @@ public class Users implements UserDetails {
         }
         return false;
     }
+
+
+    public boolean hasRole(Roles role) {
+        for (Roles role1 : this.getRoles()) {
+            if (role1.equals(role))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean hasRoleUser() {
+        for (Roles role1 : this.getRoles()) {
+            if (role1.equals(Roles.USER))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean hasRoleAdministrator() {
+        for (Roles role1 : this.getRoles()) {
+            if (role1.equals(Roles.ADMINISTRATOR))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean hasRoleProgrammer() {
+        for (Roles role1 : this.getRoles()) {
+            if (role1.equals(Roles.PROGRAMMER))
+                return true;
+        }
+        return false;
+    }
 }

@@ -79,4 +79,21 @@ public class Timer {
 
         this.days += d;
     }
+
+    public void addTime(int days, int hours, int minutes) {
+        int d = 0;
+        this.minutes += minutes;
+        d = this.minutes / 60;
+        this.minutes %= 60;
+
+        this.hours += hours + d;
+        d = this.hours / 24;
+        this.hours %= 24;
+
+        this.days += days + d;
+    }
+
+    public long getTimeAsMinutes() {
+        return this.getMinutes() + this.getHours() * 60 + this.getDays() * 24 * 60;
+    }
 }
