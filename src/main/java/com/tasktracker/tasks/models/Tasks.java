@@ -3,6 +3,9 @@ package com.tasktracker.tasks.models;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tasks")
@@ -29,18 +32,25 @@ public class Tasks {
     /*@JsonIgnore*/
     private Users userSelectedTheTask;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(/*fetch = FetchType.EAGER, */cascade = CascadeType.ALL/*, orphanRemoval = true*/)
     @JoinColumn(name = "plannedTimeId")
     private Timer plannedTime;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(/*fetch = FetchType.EAGER, */cascade = CascadeType.ALL/*, orphanRemoval = true*/)
     @JoinColumn(name = "actualTimeId")
     private Timer actualTime;
+
+
+    @ElementCollection(targetClass = Statuses.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "taskStatus", joinColumns = @JoinColumn(name = "taskId"))
+    @Enumerated(EnumType.STRING)
+    private Set<Statuses> status;
+
 
 
     public Tasks() {
     }
 
-    public Tasks(@NonNull String taskName, String taskPreview, String taskDescription, Long views, Tasks parentTask, Users author, Users userSelectedTheTask, Timer plannedTime, Timer actualTime) {
+    public Tasks(@NonNull String taskName, String taskPreview, String taskDescription, Long views, Tasks parentTask, Users author, Users userSelectedTheTask, Timer plannedTime, Timer actualTime, Statuses status) {
         this.taskName = taskName;
         this.taskPreview = taskPreview;
         this.taskDescription = taskDescription;
@@ -50,6 +60,7 @@ public class Tasks {
         this.userSelectedTheTask = userSelectedTheTask;
         this.plannedTime = plannedTime;
         this.actualTime = actualTime;
+        this.status = Collections.singleton(status);
     }
 
     public void incrementViews() {
@@ -136,5 +147,16 @@ public class Tasks {
         this.actualTime = actualTime;
     }
 
+    public Statuses getStatus() {
+        for (Statuses status : this.status) {
+            return status;
+        }
+        return null;
+    }
 
+    public void setStatus(Statuses status) {
+        Set<Statuses> statuses = new HashSet<>();
+        statuses.add(status);
+        this.status = statuses;
+    }
 }

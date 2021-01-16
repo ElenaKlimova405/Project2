@@ -42,53 +42,82 @@ public class UsersController {
         return "users-main";
     }
 
-//    @GetMapping("/users/add")
-//    public String tasksAdd(Model model) {
-//        return "users-add";
-//    }
-//
+    @GetMapping("/users/add")
+    public String tasksAdd(Model model) {
+        return "users-add";
+    }
+
+//    // добавление пользователя, но без сообщений о подтверждении
 //    @PostMapping("/users/add")
 //    public String usersPostAdd(@RequestParam(required = true) String username,
 //                               @RequestParam(required = true) String password,
-//                               @RequestParam(required = false) String first_name,
-//                               @RequestParam(required = false) String last_name,
-//                               @RequestParam(required = false) String second_name,
-//                               @RequestParam(required = false) String e_mail,
-//                               @RequestParam(required = false) String about_me,
+//                               @RequestParam(required = true) String password2,
+////                               @RequestParam(required = false) String first_name,
+////                               @RequestParam(required = false) String last_name,
+////                               @RequestParam(required = false) String second_name,
+////                               @RequestParam(required = false) String e_mail,
+////                               @RequestParam(required = false) String about_me,
 //                               Model model) {
-//        Users users = new Users(username, password, true, null, e_mail, first_name, last_name, second_name, about_me, null, null);
+//        if (usersRepository.findByUsername(username) != null) {
+//            model.addAttribute("message", "Данный логин уже занят");
+//            return "users-add";
+//        }
+//
+//        if (!password.equals(password2)) {
+//            model.addAttribute("message", "Пароли не совпадают");
+//            return "users-add";
+//        }
+//        Users users = new Users(username, password, true, null, null, null, null, null, null, null, null);
 //        usersRepository.save(users); // сохранение нового объекта
 //        return "redirect:/users/" + users.getUserId();
 //    }
 
     @GetMapping("/users/{id}")
-    public String usersDetails(@PathVariable(value = "id") long idParam,
+    public String usersDetails(@AuthenticationPrincipal Users userIn,
+                               @PathVariable(value = "id") long idParam,
                                Model model) {
+
         if (!usersRepository.existsById(idParam)) {
             return "redirect:/users";
         }
+
         //HttpSession session = httpServletRequest.getSession();
         //long user_id = (long)session.getAttribute("user_id");
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String  userLogin=null;
-        if (principal instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) principal;
-            userLogin = userDetails.getUsername();
-            System.out.println(userLogin);
+
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String userLogin=null;
+//        if (principal instanceof UserDetails) {
+//            UserDetails userDetails = (UserDetails) principal;
+//            userLogin = userDetails.getUsername();
+//            System.out.println(userLogin);
+//        }
+
+
+        Users user = usersRepository.findById(idParam).orElseThrow();
+        boolean iAmCurrentUser = false;
+        boolean iAmAdministrator = false;
+
+        if (userIn.getUsername().equals(user.getUsername())) {
+            iAmCurrentUser = true;
+        }
+
+        if (userIn.hasRoleAdministrator()) {
+            iAmAdministrator = true;
+        }
+
+        if (iAmCurrentUser || iAmAdministrator) {
+            model.addAttribute("editButton", "true");
+        }
+
+        if (!iAmCurrentUser && iAmAdministrator) {
+            model.addAttribute("deleteButton", "true");
         }
 
 
-        Optional<Users> user = usersRepository.findById(idParam);
-        boolean accessTrue = user.get().getUsername().equals(userLogin);
-
-        ArrayList<Users> currentUser = new ArrayList<>();
-        user.ifPresent(currentUser::add);
-        model.addAttribute("currentUser", currentUser);
+//        boolean accessTrue = user.get().getUsername().equals(userLogin);
 
 
-
-
-
+        model.addAttribute("currentUser", user);
         return "users-details";
     }
 
@@ -98,15 +127,32 @@ public class UsersController {
         return "redirect:/users/" + user.getUserId();
     }
 
+
     @GetMapping("/users/{id}/edit")
-    public String usersEdit(@PathVariable(value = "id") long idParam, Model model) {
+    public String usersEdit(@AuthenticationPrincipal Users userIn,
+                            @PathVariable(value = "id") long idParam,
+                            Model model) {
         if (!usersRepository.existsById(idParam)) {
             return "redirect:/users";
         }
-        Optional<Users> user = usersRepository.findById(idParam);
-        ArrayList<Users> res = new ArrayList<>();
-        user.ifPresent(res::add);
-        model.addAttribute("user", res);
+
+        Users user = usersRepository.findById(idParam).orElseThrow();
+        boolean iAmCurrentUser = false;
+        boolean iAmAdministrator = false;
+
+        if (userIn.getUsername().equals(user.getUsername())) {
+            iAmCurrentUser = true;
+        }
+
+        if (userIn.hasRoleAdministrator()) {
+            iAmAdministrator = true;
+        }
+
+        if (iAmCurrentUser || iAmAdministrator) {
+            model.addAttribute("iCanEdit", "true");
+        }
+
+        model.addAttribute("user", user);
         return "users-edit";
     }
 
@@ -126,58 +172,71 @@ public class UsersController {
                                   @RequestParam(required = false) String newPassword,
                                   @RequestParam(required = false) String newPassword2,
 
+                                  @AuthenticationPrincipal Users userIn,
                                   Model model) {
         Users user = usersRepository.findById(id).orElseThrow();
+
+        boolean iAmCurrentUser = false;
+        boolean iAmAdministrator = false;
+        if (userIn.getUsername().equals(user.getUsername())) {
+            iAmCurrentUser = true;
+        }
+
+        if (userIn.hasRoleAdministrator()) {
+            iAmAdministrator = true;
+        }
+
+        if (iAmCurrentUser || iAmAdministrator) {
+
 
         /*if (!user.getEMail().equals(eMail)) {
             user.setActivationCode(UUID.randomUUID().toString());
         }*/
 
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setSecondName(secondName);
-        user.setEMail(eMail);
-        user.setAboutMe(aboutMe);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setSecondName(secondName);
+            user.setEMail(eMail);
+            user.setAboutMe(aboutMe);
 
 
-        //if (userCheckBox != null) {
-        if (!user.hasRoleUser()) {
-            user.getRoles().add(Roles.USER);
-        }
+            //if (userCheckBox != null) {
+            if (!user.hasRoleUser()) {
+                user.getRoles().add(Roles.USER);
+            }
 //        } else {
 //            user.getRoles().remove(Roles.USER);
 //        }
 
-        if (programmerCheckBox != null) {
-            if (!user.hasRoleProgrammer()) {
-                user.getRoles().add(Roles.PROGRAMMER);
+            if (programmerCheckBox != null) {
+                if (!user.hasRoleProgrammer()) {
+                    user.getRoles().add(Roles.PROGRAMMER);
+                }
+            } else {
+                user.getRoles().remove(Roles.PROGRAMMER);
             }
-        } else {
-            user.getRoles().remove(Roles.PROGRAMMER);
-        }
 
-        if (administratorCheckBox != null) {
-            if (!user.hasRoleAdministrator()) {
-                user.getRoles().add(Roles.ADMINISTRATOR);
+            if (administratorCheckBox != null) {
+                if (!user.hasRoleAdministrator()) {
+                    user.getRoles().add(Roles.ADMINISTRATOR);
+                }
+            } else {
+                user.getRoles().remove(Roles.ADMINISTRATOR);
             }
-        } else {
-            user.getRoles().remove(Roles.ADMINISTRATOR);
-        }
 
 
-        if (!(oldPassword != null && newPassword != null && newPassword2 != null) &&
-                !(oldPassword == null && newPassword == null && newPassword2 == null)) {
-            model.addAttribute("ATTENTION", "Пароли введены неверно");
-        }
-        else {
-            String encodedPassword = passwordEncoder.encode(oldPassword);
-            if (newPassword.equals(newPassword2) && encodedPassword.equals(user.getPassword())) {
-                user.setPassword(passwordEncoder.encode(newPassword));
+            if (!(oldPassword != null && newPassword != null && newPassword2 != null) &&
+                    !(oldPassword == null && newPassword == null && newPassword2 == null)) {
+                model.addAttribute("ATTENTION", "Пароли введены неверно");
+            } else {
+                String encodedPassword = passwordEncoder.encode(oldPassword);
+                if (newPassword.equals(newPassword2) && encodedPassword.equals(user.getPassword())) {
+                    user.setPassword(passwordEncoder.encode(newPassword));
+                }
             }
-        }
 
 
-        usersRepository.save(user);
+            usersRepository.save(user);
 
         /*if (!user.getEMail().isEmpty() && user.getEMail() != null) {
             String message = String.format(
@@ -190,29 +249,48 @@ public class UsersController {
             mailSender.send(user.getEMail(), "Activation code", message);
         }*/
 
+        }
         return "redirect:/users/" + user.getUserId();
     }
 
     @PostMapping("/users/{id}/remove")
-    public String usersGetRemove(@PathVariable(value = "id") long id, Model model) {
+    public String usersGetRemove(@PathVariable(value = "id") long id,
+                                 @AuthenticationPrincipal Users userIn,
+                                 Model model) {
         Users user = usersRepository.findById(id).orElseThrow();
-        usersRepository.delete(user);
+
+        boolean iAmCurrentUser = false;
+        boolean iAmAdministrator = false;
+
+        if (userIn.getUsername().equals(user.getUsername())) {
+            iAmCurrentUser = true;
+        }
+
+        if (userIn.hasRoleAdministrator()) {
+            iAmAdministrator = true;
+        }
+
+
+        if (!iAmCurrentUser && iAmAdministrator) {
+            usersRepository.delete(user);
+        }
+
         return "redirect:/users";
     }
 
-    @GetMapping("/users/{id}/activate")
-    public String usersGetActivate(@PathVariable(value = "id") long id, Model model) {
-        Users user = usersRepository.findById(id).orElseThrow();
-        user.setActive(true);
-        usersRepository.save(user);
-        return "redirect:/users";
-    }
-
-    @GetMapping("/users/{id}/deactivate")
-    public String usersGetDeactivate(@PathVariable(value = "id") long id, Model model) {
-        Users user = usersRepository.findById(id).orElseThrow();
-        user.setActive(false);
-        usersRepository.save(user);
-        return "redirect:/users";
-    }
+//    @GetMapping("/users/{id}/activate")
+//    public String usersGetActivate(@PathVariable(value = "id") long id, Model model) {
+//        Users user = usersRepository.findById(id).orElseThrow();
+//        user.setActive(true);
+//        usersRepository.save(user);
+//        return "redirect:/users";
+//    }
+//
+//    @GetMapping("/users/{id}/deactivate")
+//    public String usersGetDeactivate(@PathVariable(value = "id") long id, Model model) {
+//        Users user = usersRepository.findById(id).orElseThrow();
+//        user.setActive(false);
+//        usersRepository.save(user);
+//        return "redirect:/users";
+//    }
 }

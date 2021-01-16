@@ -19,27 +19,12 @@
 
 
 <body>
-<header th:insert="blocks/header :: header"></header>
+<header th:insert="blocks/header :: header">
+</header>
 <header th:insert="blocks/scriptsForBootstrap :: scriptsForBootstrap">
 </header>
-
-
-
-<div th:if="${param.error}">
-    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:text="'Неверный логин или пароль'">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-</div>
-
-<div th:if="${param.logout}">
-    <div class="alert alert-success alert-dismissible fade show" role="success" th:text="'Выход успешно выполнен'">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-</div>
+<header th:insert="blocks/notifications :: notifications">
+</header>
 
 
 
@@ -48,20 +33,18 @@
 
 
 <div class="container mt-5 mb-5">
-    <h1>Статистика времени по подзадачам</h1><br>
-<!--    <div th:each="el : ${task}" }>-->
 
-
-<!--    </div>-->
     <div class="container">
-        <table class="table table-hover">
 
+        <table class="table table-hover">
+            <h1>Статистика времени по подзадачам</h1><br>
             <thead class="thead-dark">
             <tr>
                 <th>#</th>
                 <th>Задача</th>
                 <th>Фактическое время работы над задачей</th>
                 <th>Планируемое время работы над задачей</th>
+                <th>Статус задачи</th>
                 <th>Ответственный за выполнение</th>
             </tr>
             </thead>
@@ -79,6 +62,7 @@
                             </td>
                             <td th:text="${triple.getTask.getActualTime.getDays} + ' дней ' + ${triple.getTask.getActualTime.getHours} + ' часов ' + ${triple.getTask.getActualTime.getMinutes} + ' минут'" />
                             <td th:text="${triple.getTask.getPlannedTime.getDays} + ' дней ' + ${triple.getTask.getPlannedTime.getHours} + ' часов ' + ${triple.getTask.getPlannedTime.getMinutes} + ' минут'" />
+                            <td th:text="${triple.getTask.getStatus.getEnumName}"/>
                             <div th:if="${triple.getTask.getUserSelectedTheTask}">
                                 <td>
                                     <a th:href="'/users/' + ${triple.getTask.getUserSelectedTheTask.getUserId}" class="alert-link" th:text="${triple.getTask.getUserSelectedTheTask.getUsername}"/>
@@ -98,6 +82,7 @@
                             </td>
                             <td th:text="${triple.getTask.getActualTime.getDays} + ' дней ' + ${triple.getTask.getActualTime.getHours} + ' часов ' + ${triple.getTask.getActualTime.getMinutes} + ' минут'" />
                             <td th:text="${triple.getTask.getPlannedTime.getDays} + ' дней ' + ${triple.getTask.getPlannedTime.getHours} + ' часов ' + ${triple.getTask.getPlannedTime.getMinutes} + ' минут'" />
+                            <td th:text="${triple.getTask.getStatus.getEnumName}"/>
                             <div th:if="${triple.getTask.getUserSelectedTheTask}">
                                 <td>
                                     <a th:href="'/users/' + ${triple.getTask.getUserSelectedTheTask.getUserId}" class="alert-link" th:text="${triple.getTask.getUserSelectedTheTask.getUsername}"/>
@@ -117,6 +102,7 @@
                             </td>
                             <td th:text="${triple.getTask.getActualTime.getDays} + ' дней ' + ${triple.getTask.getActualTime.getHours} + ' часов ' + ${triple.getTask.getActualTime.getMinutes} + ' минут'" />
                             <td th:text="${triple.getTask.getPlannedTime.getDays} + ' дней ' + ${triple.getTask.getPlannedTime.getHours} + ' часов ' + ${triple.getTask.getPlannedTime.getMinutes} + ' минут'" />
+                            <td th:text="${triple.getTask.getStatus.getEnumName}"/>
                             <div th:if="${triple.getTask.getUserSelectedTheTask}">
                                 <td>
                                     <a th:href="'/users/' + ${triple.getTask.getUserSelectedTheTask.getUserId}" class="alert-link" th:text="${triple.getTask.getUserSelectedTheTask.getUsername}"/>
@@ -139,6 +125,7 @@
                         </td>
                         <td th:text="${triple.getTask.getActualTime.getDays} + ' дней ' + ${triple.getTask.getActualTime.getHours} + ' часов ' + ${triple.getTask.getActualTime.getMinutes} + ' минут'" />
                         <td th:text="${triple.getTask.getPlannedTime.getDays} + ' дней ' + ${triple.getTask.getPlannedTime.getHours} + ' часов ' + ${triple.getTask.getPlannedTime.getMinutes} + ' минут'" />
+                        <td th:text="${triple.getTask.getStatus.getEnumName}"/>
                         <div th:if="${triple.getTask.getUserSelectedTheTask}">
                             <td>
                                 <a th:href="'/users/' + ${triple.getTask.getUserSelectedTheTask.getUserId}" class="alert-link" th:text="${triple.getTask.getUserSelectedTheTask.getUsername}"/>
@@ -160,6 +147,7 @@
                 <td th:text="${actualTimeSum.getDays} + ' дней ' + ${actualTimeSum.getHours} + ' часов ' + ${actualTimeSum.getMinutes} + ' минут'" />
                 <td th:text="${plannedTimeSum.getDays} + ' дней ' + ${plannedTimeSum.getHours} + ' часов ' + ${plannedTimeSum.getMinutes} + ' минут'" />
                 <th></th>
+                <th></th>
             </tr>
 
 
@@ -175,12 +163,12 @@
         <div>
             <div th:if="${warningAttribute}">
                 <div class="alert alert-danger mt-2">
-                    <p th:text="'Израсходовано времени: ' + ${plan} + '%'" />
+                    <p th:text="'Израсходовано времени: ' + ${plan} + ' %'" />
                 </div>
             </div>
             <div th:if="${successAttribute}">
                 <div class="alert alert-success mt-2">
-                    <p th:text="'Израсходовано времени: ' + ${plan} + '%'" />
+                    <p th:text="'Израсходовано времени: ' + ${plan} + ' %'" />
                 </div>
             </div>
         </div>
@@ -189,11 +177,12 @@
 
     </div>
 
-
 </div>
 
 
-<div th:insert="blocks/footer :: footer"></div>
 
+
+
+<div th:insert="blocks/footer :: footer"></div>
 </body>
 </html>

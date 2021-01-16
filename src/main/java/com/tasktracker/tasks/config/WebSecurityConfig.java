@@ -33,16 +33,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/", "/about", "/registration").permitAll()  // разешаем этим пользоваться всем
 
+
                 .antMatchers("/tasks").access("hasAuthority('USER')")
                 .antMatchers("/tasks/**").access("hasAuthority('USER')")
                 /*.antMatchers("/tasks/{id}").access("hasAuthority('USER')")
                 .antMatchers("/tasks/{id}/edit").access("hasAuthority('USER')")
                 .antMatchers("/tasks/{id}/remove").access("hasAuthority('USER')")*/
 
+
+//                .antMatchers("/users/add").access("hasAuthority('ADMINISTRATOR')")
                 .antMatchers("/users").access("hasAuthority('USER')")
                 .antMatchers("/users/**").access("hasAuthority('USER')")
-                /*.antMatchers("/users/{id}").access("hasAuthority('USER')")
-                .antMatchers("/users/{id}/edit").access("hasAuthority('USER')")
+
+                /*.antMatchers("/users/{id}/edit").access("hasAuthority('USER')")
                 .antMatchers("/users/{id}/remove").access("hasAuthority('USER')")*/
 
                 .anyRequest().authenticated() // а на другие запросы нужна регистрация

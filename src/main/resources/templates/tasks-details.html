@@ -19,24 +19,12 @@
 </header>
 <header th:insert="blocks/scriptsForBootstrap :: scriptsForBootstrap">
 </header>
+<header th:insert="blocks/notifications :: notifications">
+</header>
 
 
 
-<div th:if="${param.error}">
-    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:text="'Неверный логин или пароль'">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-</div>
 
-<div th:if="${param.logout}">
-    <div class="alert alert-success alert-dismissible fade show" role="success" th:text="'Выход успешно выполнен'">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-</div>
 
 
 
@@ -51,13 +39,13 @@
         <p th:text="${elem.getTaskPreview}"/>
 
 
-
+        <p th:text="'Статус: ' + ${elem.getStatus.getEnumName}"/>
         <p><b>Просмотры: </b><span th:text="${elem.getViews}"/></p><br>
 
 
 
 
-        <div class="accordion" id="accordionName7">
+        <div class="accordion" id="accordionName1">
 
             <div class="card">
                 <div class="card-header" id="headingName71">
@@ -67,31 +55,31 @@
                         </button>
                     </h5>
                 </div>
-                <div id="collapseName71" class="collapse" aria-labelledby="headingName71" data-parent="#accordionName7">
+                <div id="collapseName71" class="collapse" aria-labelledby="headingName71" data-parent="#accordionName1">
                     <div class="card-body">
                         <p th:text="${elem.getTaskDescription}"/><br><br>
                     </div>
                 </div>
             </div>
 
-        </div>
+<!--        </div>-->
 
 
 
 
 
 
-        <div class="accordion" id="accordionName2">
+<!--        <div class="accordion" id="accordionName2">-->
 
             <div class="card">
                 <div class="card-header" id="headingName11">
                     <h5 class="mb-0">
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseName11" aria-expanded="false" aria-controls="collapseName11">
-                            Является подзаданием для:
+                            Является подзадачей для:
                         </button>
                     </h5>
                 </div>
-                <div id="collapseName11" class="collapse" aria-labelledby="headingName11" data-parent="#accordionName2">
+                <div id="collapseName11" class="collapse" aria-labelledby="headingName11" data-parent="#accordionName1">
                     <div class="card-body">
                         <div th:each="currentParentTask : ${elem.getParentTask}" class="alert alert-primary">
                             <a th:href="'/tasks/' + ${currentParentTask.getTaskId}" class="alert-link">[[${currentParentTask.taskName}]]</a>
@@ -100,7 +88,7 @@
                 </div>
             </div>
 
-        </div>
+<!--        </div>-->
 
 
 
@@ -109,13 +97,13 @@
 
 
 
-        <div class="accordion" id="accordionName1">
+<!--        <div class="accordion" id="accordionName1">-->
 
             <div class="card">
                 <div class="card-header" id="headingName1">
                     <h5 class="mb-0">
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseName1" aria-expanded="false" aria-controls="collapseName1">
-                            Содержит подзадания:
+                            Содержит подзадачи:
                         </button>
                     </h5>
                 </div>
@@ -128,7 +116,7 @@
                 </div>
             </div>
 
-        </div>
+<!--        </div>-->
 
 
 
@@ -138,17 +126,17 @@
 
 
 
-        <div class="accordion" id="accordionName3">
+<!--        <div class="accordion" id="accordionName3">-->
 
             <div class="card">
                 <div class="card-header" id="headingName31">
                     <h5 class="mb-0">
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseName31" aria-expanded="false" aria-controls="collapseName31">
-                            Автор задания:
+                            Автор задачи:
                         </button>
                     </h5>
                 </div>
-                <div id="collapseName31" class="collapse" aria-labelledby="headingName31" data-parent="#accordionName3">
+                <div id="collapseName31" class="collapse" aria-labelledby="headingName31" data-parent="#accordionName1">
                     <div class="card-body">
                         <div th:each="currentAuthor : ${elem.getAuthor}" class="alert alert-primary">
                             <a th:href="'/users/' + ${currentAuthor.getUserId}" class="alert-link">[[${currentAuthor.username}]]</a>
@@ -157,7 +145,7 @@
                 </div>
             </div>
 
-        </div>
+<!--        </div>-->
 
 
 
@@ -166,17 +154,17 @@
 
 
 
-        <div class="accordion" id="accordionName4">
+<!--        <div class="accordion" id="accordionName4">-->
 
             <div class="card">
                 <div class="card-header" id="headingName41">
                     <h5 class="mb-0">
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseName41" aria-expanded="false" aria-controls="collapseName41">
-                            Пользователь, взявший задание:
+                            Пользователь, взявший задачу:
                         </button>
                     </h5>
                 </div>
-                <div id="collapseName41" class="collapse" aria-labelledby="headingName41" data-parent="#accordionName4">
+                <div id="collapseName41" class="collapse" aria-labelledby="headingName41" data-parent="#accordionName1">
                     <div class="card-body">
                         <div th:each="currentUserSelectedTheTask : ${elem.getUserSelectedTheTask}" class="alert alert-primary">
                             <a th:href="'/users/' + ${currentUserSelectedTheTask.getUserId}" class="alert-link">[[${currentUserSelectedTheTask.username}]]</a>
@@ -185,7 +173,7 @@
                 </div>
             </div>
 
-        </div>
+<!--        </div>-->
 
 
 
@@ -200,54 +188,63 @@
 
 
 
-        <div class="accordion" id="accordionName5">
+<!--        <div class="accordion" id="accordionName5">-->
 
             <div class="card">
                 <div class="card-header" id="headingName51">
                     <h5 class="mb-0">
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseName51" aria-expanded="false" aria-controls="collapseName51">
-                            Планируемое время работы над заданием:
+                            Планируемое время работы над задачей:
                         </button>
                     </h5>
                 </div>
-                <div id="collapseName51" class="collapse" aria-labelledby="headingName51" data-parent="#accordionName5">
+                <div id="collapseName51" class="collapse" aria-labelledby="headingName51" data-parent="#accordionName1">
                     <div class="card-body">
                         <p th:text="${elem.plannedTime.days} + ' дней ' + ${elem.plannedTime.hours} + ' часов ' + ${elem.plannedTime.minutes} + ' минут '"/>
 
-                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                            <div class="btn-group mr-2" role="group" aria-label="First group">
-                                <a th:href="'/tasks/' + ${elem.getTaskId} + '/set_planned_time'" class="btn btn-warning">Установить время</a>
+
+                        <div th:if="${iAmAuthor}">
+                            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                                <div class="btn-group mr-2" role="group" aria-label="First group">
+                                    <a th:href="'/tasks/' + ${elem.getTaskId} + '/set_planned_time'" class="btn btn-warning">Установить время</a>
+                                </div>
                             </div>
                         </div>
+
+
+
 
                     </div>
                 </div>
             </div>
 
-        </div>
+<!--        </div>-->
 
 
 
 
-        <div class="accordion" id="accordionName6">
+<!--        <div class="accordion" id="accordionName6">-->
 
             <div class="card">
                 <div class="card-header" id="headingName61">
                     <h5 class="mb-0">
                         <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseName61" aria-expanded="false" aria-controls="collapseName61">
-                            Фактическое время работы над заданием:
+                            Фактическое время работы над задачей:
                         </button>
                     </h5>
                 </div>
-                <div id="collapseName61" class="collapse" aria-labelledby="headingName61" data-parent="#accordionName6">
+                <div id="collapseName61" class="collapse" aria-labelledby="headingName61" data-parent="#accordionName1">
                     <div class="card-body">
                         <p th:text="${elem.actualTime.days} + ' дней ' + ${elem.actualTime.hours} + ' часов ' + ${elem.actualTime.minutes} + ' минут '"/>
 
+
+                        <div th:if="${iSelectedTask}">
                         <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
                             <div class="btn-group mr-2" role="group" aria-label="First group">
                                 <a th:href="'/tasks/' + ${elem.getTaskId} + '/add_actual_time'" class="btn btn-warning">Прибавить время</a>
                                 <a th:href="'/tasks/' + ${elem.getTaskId} + '/change_actual_time'" class="btn btn-warning">Установить время</a>
                             </div>
+                        </div>
                         </div>
 
                     </div>
@@ -267,14 +264,25 @@
             <div class="btn-group mr-2" role="group" aria-label="First group">
                 <a th:href="'/tasks/' + ${elem.getTaskId} + '/statistics'" class="btn btn-secondary">Показать статистику</a>
             </div>
+
             <div class="btn-group mr-2" role="group" aria-label="Second group">
+                <div th:if="${getTaskButton}">
                 <a th:href="'/tasks/' + ${elem.getTaskId} + '/get_task'" class="btn btn-secondary">Взять задачу</a>
+                </div>
+                <div th:if="${cancelTaskButton}">
                 <a th:href="'/tasks/' + ${elem.getTaskId} + '/get_task_cancel'" class="btn btn-secondary">Отказаться от задачи</a>
+                </div>
+                <div th:if="${canMarkCompletedButton}">
+                    <a th:href="'/tasks/' + ${elem.getTaskId} + '/mark_solved'" class="btn btn-secondary">Пометить задачу решенной</a>
+                </div>
                 <a th:href="'/tasks/' + ${elem.getTaskId} + '/create_subtask'" class="btn btn-secondary">Создать подзадачу</a>
             </div>
-            <div class="btn-group" role="group" aria-label="Third group">
-                <a th:href="'/tasks/' + ${elem.getTaskId} + '/edit'" class="btn btn-warning">Редактировать</a>
-                <a th:href="'/tasks/' + ${elem.getTaskId} + '/remove'" class="btn btn-danger">Удалить</a>
+
+            <div th:if="${iAmAuthor}">
+                <div class="btn-group" role="group" aria-label="Third group">
+                    <a th:href="'/tasks/' + ${elem.getTaskId} + '/edit'" class="btn btn-warning">Редактировать</a>
+                    <a th:href="'/tasks/' + ${elem.getTaskId} + '/remove'" class="btn btn-danger">Удалить</a>
+                </div>
             </div>
         </div>
 

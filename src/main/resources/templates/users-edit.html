@@ -15,44 +15,18 @@
 
 
 <body>
-<header th:insert="blocks/header :: header"></header>
+<header th:insert="blocks/header :: header">
+</header>
 <header th:insert="blocks/scriptsForBootstrap :: scriptsForBootstrap">
+</header>
+<header th:insert="blocks/notifications :: notifications">
 </header>
 
 
 
 
-<div th:if="${message}">
-    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:text="${message}">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-</div>
 
-<div th:if="${param.error}">
-    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:text="'Неверный логин или пароль'">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-</div>
-
-<div th:if="${param.logout}">
-    <div class="alert alert-success alert-dismissible fade show" role="success" th:text="'Выход успешно выполнен'">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-</div>
-
-
-
-
-
-
-
-<div class="container mt-5 mb-5">
+<div th:if="${iCanEdit}" class="container mt-5 mb-5">
     <h1>Редактирование пользователя</h1>
     <div th:each="el : ${user}" }>
         <form method="post">
@@ -76,18 +50,18 @@
 
             <div class="jumbotron">
                 <h2>Роли пользователя</h2><br>
-                <label class="checkbox-inline disabled"><input type="checkbox" name="userCheckBox" value="" disabled checked> USER  </label>
+                <label class="checkbox-inline disabled"><input type="checkbox" name="userCheckBox" value="" disabled checked> Пользователь  </label>
                 <div th:if="${el.hasRoleProgrammer}">
-                    <label class="checkbox-inline"><input type="checkbox" name="programmerCheckBox" value="" checked> PROGRAMMER  </label>
+                    <label class="checkbox-inline"><input type="checkbox" name="programmerCheckBox" value="" checked> Программист  </label>
                 </div>
                 <div th:if="${!el.hasRoleProgrammer}">
-                    <label class="checkbox-inline"><input type="checkbox" name="programmerCheckBox" value=""> PROGRAMMER  </label>
+                    <label class="checkbox-inline"><input type="checkbox" name="programmerCheckBox" value=""> Программист  </label>
                 </div>
                 <div th:if="${el.hasRoleAdministrator}">
-                    <label class="checkbox-inline"><input type="checkbox" name="administratorCheckBox" value="" checked> ADMINISTRATOR  </label>
+                    <label class="checkbox-inline"><input type="checkbox" name="administratorCheckBox" value="" checked> Администратор  </label>
                 </div>
                 <div th:if="${!el.hasRoleAdministrator}">
-                    <label class="checkbox-inline"><input type="checkbox" name="administratorCheckBox" value=""> ADMINISTRATOR  </label>
+                    <label class="checkbox-inline"><input type="checkbox" name="administratorCheckBox" value=""> Администратор  </label>
                 </div>
             </div>
 

@@ -19,25 +19,8 @@
 </header>
 <header th:insert="blocks/scriptsForBootstrap :: scriptsForBootstrap">
 </header>
-
-
-
-
-<div th:if="${param.error}">
-    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:text="'Неверный логин или пароль'">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-</div>
-
-<div th:if="${param.logout}">
-    <div class="alert alert-success alert-dismissible fade show" role="success" th:text="'Выход успешно выполнен'">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-</div>
+<header th:insert="blocks/notifications :: notifications">
+</header>
 
 
 
@@ -49,14 +32,15 @@
     <h1>Добавление пользователя</h1>
     <form action="/users/add" method="post">
 
-        <input type="text" name="username" placeholder="Введите логин (обязательное поле)" class="form-control"><br>
-        <input type="text" name="password" placeholder="Введите пароль (обязательное поле)" class="form-control"><br>
+        <input type="text" name="username" placeholder="Логин" class="form-control"><br>
+        <input type="password" name="password" placeholder="Пароль" class="form-control"><br>
+        <input type="password" name="password2" placeholder="Повторите пароль" class="form-control"><br>
 
-        <input type="text" name="firstName" placeholder="Введите имя пользователя" class="form-control"><br>
-        <input type="text" name="lastName" placeholder="Введите фамилию пользователя" class="form-control"><br>
-        <input type="text" name="secondName" placeholder="Введите отчество пользователя" class="form-control"><br>
-        <input type="text" name="eMail" placeholder="Введите eMail" class="form-control"><br>
-        <textarea name="aboutMe" placeholder="Заполните поле 'О себе'" class="form-control"></textarea><br>
+<!--        <input type="text" name="firstName" placeholder="Введите имя пользователя" class="form-control"><br>-->
+<!--        <input type="text" name="lastName" placeholder="Введите фамилию пользователя" class="form-control"><br>-->
+<!--        <input type="text" name="secondName" placeholder="Введите отчество пользователя" class="form-control"><br>-->
+<!--        <input type="text" name="eMail" placeholder="Введите eMail" class="form-control"><br>-->
+<!--        <textarea name="aboutMe" placeholder="Заполните поле 'О себе'" class="form-control"></textarea><br>-->
         <button type="submit" class="btn btn-success">Добавить пользователя</button>
         <br>
     </form>

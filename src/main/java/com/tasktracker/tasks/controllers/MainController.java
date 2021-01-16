@@ -35,6 +35,7 @@ public class MainController {
     @GetMapping("/")
     public String home(/*@RequestParam(name="name", required=false, defaultValue="World") String name, */Model model) {
         model.addAttribute("someAttribute", "Сюда можно вставить имя пользователя");
+
         return "home";
     }
 

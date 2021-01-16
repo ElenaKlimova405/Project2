@@ -19,25 +19,8 @@
 </header>
 <header th:insert="blocks/scriptsForBootstrap :: scriptsForBootstrap">
 </header>
-
-
-
-
-<div th:if="${param.error}">
-    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:text="'Неверный логин или пароль'">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-</div>
-
-<div th:if="${param.logout}">
-    <div class="alert alert-success alert-dismissible fade show" role="success" th:text="'Выход успешно выполнен'">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-</div>
+<header th:insert="blocks/notifications :: notifications">
+</header>
 
 
 
@@ -49,43 +32,264 @@
     <h1>Подробнее о пользователе</h1>
     <div th:each="elem : ${currentUser}" class="alert alert-info mt-2">
         <h3 th:text="${elem.username}"/>
-        <p th:text="'Пароль: ' + ${elem.password}"/>
-        <p th:text="'Роли: '"/>
-        <div th:each="currentRole : ${elem.roles}" class="alert alert-primary">
-            <a th:text="${currentRole}"/>
+<!--        <p th:text="'Пароль: ' + ${elem.password}"/>-->
+
+
+
+
+
+
+
+
+        <div class="accordion" id="accordionName1">
+
+            <div class="card">
+                <div class="card-header" id="headingName2">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseName2" aria-expanded="false" aria-controls="collapseName2">
+                            ФИО:
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseName2" class="collapse" aria-labelledby="headingName2" data-parent="#accordionName1">
+                    <div class="card-body">
+                        <p th:text="'Фамилия: ' + ${elem.lastName}"/>
+                        <p th:text="'Имя: ' + ${elem.firstName}"/>
+                        <p th:text="'Отчество: ' + ${elem.secondName}"/>
+                    </div>
+                </div>
+            </div>
+
+<!--        </div>-->
+
+
+
+
+
+
+
+
+
+<!--        <div class="accordion" id="accordionName3">-->
+
+            <div class="card">
+                <div class="card-header" id="headingName3">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseName3" aria-expanded="false" aria-controls="collapseName3">
+                            e-mail:
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseName3" class="collapse" aria-labelledby="headingName3" data-parent="#accordionName1">
+                    <div class="card-body">
+                        <p th:text="${elem.eMail}"/>
+                    </div>
+                </div>
+            </div>
+
+<!--        </div>-->
+
+
+
+
+
+
+
+
+
+
+<!--        <div class="accordion" id="accordionName4">-->
+
+            <div class="card">
+                <div class="card-header" id="headingName4">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseName4" aria-expanded="false" aria-controls="collapseName4">
+                            О себе:
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseName4" class="collapse" aria-labelledby="headingName4" data-parent="#accordionName1">
+                    <div class="card-body">
+
+                        <p>
+                            <textarea name="aboutMe" class="form-control" th:text="${elem.aboutMe}" readonly /><br>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+
+<!--        </div>-->
+
+
+
+
+
+
+
+
+
+
+
+<!--        <div class="accordion" id="accordionName1">-->
+
+            <div class="card">
+                <div class="card-header" id="headingName1">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseName1" aria-expanded="false" aria-controls="collapseName1">
+                            Роли:
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseName1" class="collapse" aria-labelledby="headingName1" data-parent="#accordionName1">
+                    <div class="card-body">
+
+                        <div th:each="currentRole : ${elem.roles}" class="alert alert-primary">
+                            <a th:text="${currentRole.getEnumName}"/>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+<!--        </div>-->
+
+
+
+
+
+<!--        <p th:text="'Активный аккаунт: ' + ${elem.active}"/>-->
+
+
+
+
+
+
+
+
+
+
+<!--        <div class="accordion" id="accordionName5">-->
+
+            <div class="card">
+                <div class="card-header" id="headingName5">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseName5" aria-expanded="false" aria-controls="collapseName5">
+                            Созданные задачи:
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseName5" class="collapse" aria-labelledby="headingName5" data-parent="#accordionName1">
+                    <div class="card-body">
+
+                        <div th:each="currentTask : ${elem.createdTasks}" class="alert alert-primary">
+                            <a th:href="'/tasks/' + ${currentTask.taskId}" class="alert-link">[[${currentTask.taskName}]]</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+<!--        </div>-->
+
+
+
+
+
+
+
+
+
+
+<!--        <div class="accordion" id="accordionName6">-->
+
+            <div class="card">
+                <div class="card-header" id="headingName6">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseName6" aria-expanded="false" aria-controls="collapseName6">
+                            Взятые задачи:
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseName6" class="collapse" aria-labelledby="headingName6" data-parent="#accordionName1">
+                    <div class="card-body">
+
+                        <div th:each="selectedTask : ${elem.selectedTasks}" class="alert alert-primary">
+                            <a th:href="'/tasks/' + ${selectedTask.taskId}" class="alert-link">[[${selectedTask.taskName}]]</a>
+                        </div>
+                        <br>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <p th:text="'Активный аккаунт: ' + ${elem.active}"/>
 
-        <p th:text="'Фамилия: ' + ${elem.lastName}"/>
-        <p th:text="'Имя: ' + ${elem.firstName}"/>
-        <p th:text="'Отчество: ' + ${elem.secondName}"/>
-        <p th:text="'eMail: ' + ${elem.eMail}"/>
-        <p th:text="'Обо мне: ' + ${elem.aboutMe}"/>
-        <!--            <p th:text="'Созданные задания: ' + ${elem.createdTasks}"/>-->
-        <p th:text="'Созданные задания: '"/>
-        <div th:each="currentTask : ${elem.createdTasks}" class="alert alert-primary">
-            <a th:href="'/tasks/' + ${currentTask.taskId}" class="alert-link">[[${currentTask.taskName}]]</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--        <a th:href="'/users/' + ${elem.userId} + '/edit'" class="btn btn-warning">Редактировать аккаунт</a><br><br>-->
+<!--        <form th:action="'/users/' + ${elem.userId} + '/remove'" method="post">-->
+<!--            <button class="btn btn-danger" type="submit">Удалить аккаунт</button>-->
+<!--        </form>-->
+<!--        -->
+<!--        -->
+<!--        -->
+<!--        <form th:action="'/users/' + ${elem.userId} + '/activate'" method="post">-->
+<!--            <button class="btn btn-danger" type="submit">Активировать аккаунт</button>-->
+<!--        </form><br>-->
+<!--        <form th:action="'/users/' + ${elem.userId} + '/deactivate'" method="post">-->
+<!--            <button class="btn btn-danger" type="submit">Деактивировать аккаунт</button>-->
+<!--        </form><br>-->
+
+
+
+
+        <br><br>
+
+
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group mr-2" role="group" aria-label="First group">
+
+
+                <div th:if="${editButton}">
+                    <a th:href="'/users/' + ${elem.userId} + '/edit'" class="btn btn-warning">Редактировать аккаунт</a>
+                </div>
+
+                <div th:if="${deleteButton}">
+                    <form th:action="'/users/' + ${elem.userId} + '/remove'" method="post">
+                        <button class="btn btn-danger" type="submit">Удалить аккаунт</button>
+                    </form>
+                </div>
+            </div>
+<!--            <div class="btn-group mr-2" role="group" aria-label="Second group">-->
+<!--                <form th:action="'/users/' + ${elem.userId} + '/activate'" method="post">-->
+<!--                    <button class="btn btn-danger" type="submit">Активировать аккаунт</button>-->
+<!--                </form>-->
+<!--                <form th:action="'/users/' + ${elem.userId} + '/deactivate'" method="post">-->
+<!--                    <button class="btn btn-danger" type="submit">Деактивировать аккаунт</button>-->
+<!--                </form>-->
+<!--            </div>-->
         </div>
-        <p th:text="'Взятые задания: ' "/>
-        <div th:each="selectedTask : ${elem.selectedTasks}" class="alert alert-primary">
-            <a th:href="'/tasks/' + ${selectedTask.taskId}" class="alert-link">[[${selectedTask.taskName}]]</a>
-        </div>
-        <br>
 
 
-        <!--    todo    "выше еще будет написана дата выполнения задания, если есть"-->
 
 
-        <a th:href="'/users/' + ${elem.userId} + '/edit'" class="btn btn-warning">Редактировать аккаунт</a><br><br>
-        <form th:action="'/users/' + ${elem.userId} + '/activate'" method="post">
-            <button class="btn btn-danger" type="submit">Активировать аккаунт</button>
-        </form><br>
-        <form th:action="'/users/' + ${elem.userId} + '/deactivate'" method="post">
-            <button class="btn btn-danger" type="submit">Деактивировать аккаунт</button>
-        </form><br>
-        <form th:action="'/users/' + ${elem.userId} + '/remove'" method="post">
-            <button class="btn btn-danger" type="submit">Удалить аккаунт</button>
-        </form>
+
 
 
     </div>

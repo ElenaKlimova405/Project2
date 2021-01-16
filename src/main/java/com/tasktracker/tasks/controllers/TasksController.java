@@ -1,6 +1,7 @@
 package com.tasktracker.tasks.controllers;
 
 import com.tasktracker.tasks.additional_classes.Triple;
+import com.tasktracker.tasks.models.Statuses;
 import com.tasktracker.tasks.models.Tasks;
 import com.tasktracker.tasks.models.Timer;
 import com.tasktracker.tasks.models.Users;
@@ -58,63 +59,119 @@ public class TasksController {
                 user,
                 null,
                 new Timer(),
-                new Timer()
+                new Timer(),
+                Statuses.DISTRIBUTED
         );
         tasksRepository.save(task); // сохранение нового объекта
         return "redirect:/tasks/" + task.getTaskId();
     }
 
     @GetMapping("/tasks/{id}")
-    public String tasksDetails(@PathVariable(value = "id") long idParam, Model model) {
+    public String tasksDetails(@AuthenticationPrincipal Users user,
+                               @PathVariable(value = "id") long idParam,
+                               Model model) {
         if (!tasksRepository.existsById(idParam)) {
             return "redirect:/tasks";
         }
-        Optional<Tasks> task = tasksRepository.findById(idParam);
-        ArrayList<Tasks> currentTask = new ArrayList<>();
-        task.ifPresent(currentTask::add);
+        Tasks task = tasksRepository.findById(idParam).orElseThrow();
         List<Tasks> children = null;
-        for (Tasks oneTask : currentTask) {
-            oneTask.incrementViews();
-            tasksRepository.save(oneTask);
-            children = tasksRepository.findChildren(oneTask);
-        }
-        model.addAttribute("currentTask", currentTask);
+
+        task.incrementViews();
+        tasksRepository.save(task);
+        children = tasksRepository.findChildren(task);
+
+        model.addAttribute("currentTask", task);
         model.addAttribute("children", children);
+
+
+
+
+        if (task.getUserSelectedTheTask() == null) {
+            model.addAttribute("getTaskButton", "true");
+        } else {
+            if (user.getUsername().equals(task.getUserSelectedTheTask().getUsername())) {
+                model.addAttribute("cancelTaskButton", "true");
+            }
+        }
+
+
+
+        if (user.getUsername().equals(task.getAuthor().getUsername()) || user.hasRoleAdministrator()) {
+            model.addAttribute("iAmAuthor", "true");
+        }
+        if (task.getUserSelectedTheTask() != null) {
+            if (user.getUsername().equals(task.getUserSelectedTheTask().getUsername())) {
+                model.addAttribute("iSelectedTask", "true");
+                if (task.getStatus().equals(Statuses.TAKEN)) {
+                    model.addAttribute("canMarkCompletedButton", "true");
+                }
+            }
+        }
+
+
+
         return "tasks-details";
     }
 
     @GetMapping("/tasks/{id}/edit")
-    public String tasksEdit(@PathVariable(value = "id") long idParam, Model model) {
+    public String tasksEdit(@AuthenticationPrincipal Users user,
+                            @PathVariable(value = "id") long idParam,
+                            Model model) {
         if (!tasksRepository.existsById(idParam)) {
             return "redirect:/tasks/{id}";
         }
-        Optional<Tasks> task = tasksRepository.findById(idParam);
-        List<Tasks> res = new ArrayList<>();
-        task.ifPresent(res::add);
-        model.addAttribute("task", res);
+        Tasks task = tasksRepository.findById(idParam).orElseThrow();
+        if (user.getUsername().equals(task.getAuthor().getUsername()) || user.hasRoleAdministrator()) {
+            model.addAttribute("task", task);
+        }
+
         return "tasks-edit";
     }
 
     @PostMapping("/tasks/{id}/edit")
-    public String tasksPostUpdate(@PathVariable(value = "id") long id,
+    public String tasksPostUpdate(@AuthenticationPrincipal Users user,
+
+                                  @PathVariable(value = "id") long id,
                                   @RequestParam(required = true) String taskName,
                                   @RequestParam(required = false, defaultValue = "") String taskPreview,
                                   @RequestParam(required = false, defaultValue = "") String taskDescription,
 
-                                  Model model) {
-        Tasks task = tasksRepository.findById(id).orElseThrow();
-        task.setTaskName(taskName);
-        task.setTaskPreview(taskPreview);
-        task.setTaskDescription(taskDescription);
+                                  @RequestParam(required = false, defaultValue = "0") int daysOfPlannedTime,
+                                  @RequestParam(required = false, defaultValue = "0") int hoursOfPlannedTime,
+                                  @RequestParam(required = false, defaultValue = "0") int minutesOfPlannedTime,
 
-        tasksRepository.save(task);
+                                  @RequestParam(required = false, defaultValue = "0") int daysOfActualTime,
+                                  @RequestParam(required = false, defaultValue = "0") int hoursOfActualTime,
+                                  @RequestParam(required = false, defaultValue = "0") int minutesOfActualTime,
+
+                                  Model model) {
+
+        Tasks task = tasksRepository.findById(id).orElseThrow();
+
+        if (user.getUsername().equals(task.getAuthor().getUsername()) || user.hasRoleAdministrator()) {
+            Timer plannedTime = new Timer(daysOfPlannedTime, hoursOfPlannedTime, minutesOfPlannedTime);
+            Timer actualTime = new Timer(daysOfActualTime, hoursOfActualTime, minutesOfActualTime);
+
+            task.setTaskName(taskName);
+            task.setTaskPreview(taskPreview);
+            task.setTaskDescription(taskDescription);
+            task.setActualTime(actualTime);
+            task.setPlannedTime(plannedTime);
+
+            tasksRepository.save(task);
+        }
+
         return "redirect:/tasks/" + task.getTaskId();
     }
 
     @GetMapping("/tasks/{id}/remove")
-    public String tasksPostDelete(@PathVariable(value = "id") long id, Model model) {
+    public String tasksPostDelete(@AuthenticationPrincipal Users user,
+                                  @PathVariable(value = "id") long id,
+                                  Model model) {
         Tasks task = tasksRepository.findById(id).orElseThrow();
-        tasksRepository.delete(task);
+        if (user.getUsername().equals(task.getAuthor().getUsername()) || user.hasRoleAdministrator()) {
+            tasksRepository.delete(task);
+        }
 
         return "redirect:/tasks";
     }
@@ -146,7 +203,8 @@ public class TasksController {
                 user,
                 null,
                 new Timer(),
-                new Timer()
+                new Timer(),
+                Statuses.DISTRIBUTED
         );
 
         tasksRepository.save(subtask); // сохранение нового объекта
@@ -158,42 +216,48 @@ public class TasksController {
     public String tasksGetGetTask(@PathVariable(value = "id") long id,
                                   @AuthenticationPrincipal Users user,
                                   Model model) {
+
         Tasks task = tasksRepository.findById(id).orElseThrow();
-        task.setUserSelectedTheTask(user);
-        tasksRepository.save(task);
+        if (task.getUserSelectedTheTask() == null) {
+            task.setUserSelectedTheTask(user);
+            task.setStatus(Statuses.TAKEN);
+            tasksRepository.save(task);
+        }
+
         return "redirect:/tasks/{id}";
     }
 
 
-//    @GetMapping("/tasks/{id}/mark_solved")
-//    public String tasksGetMarkSolved(@PathVariable(value = "id") long id,
-//                                     @AuthenticationPrincipal Users user,
-//                                     Model model) throws ParseException {
-//        Tasks task = tasksRepository.findById(id).orElseThrow();
-//        DateFormat simpleDateFormat = new SimpleDateFormat();
-//        task.setActualTime(simpleDateFormat.format(new Date()));
-//
-//        long difference = simpleDateFormat.parse(task.getActualTime()).getTime() - simpleDateFormat.parse(task.getTakingTime()).getTime();
-//        String diffTime = "";
-//        diffTime = (difference / (1000 * 60 * 60 * 24)) + " дней ";
-//        difference %= (1000 * 60 * 60 * 24);
-//        diffTime += difference / (1000 * 60 * 60) + " часов ";
-//        difference %= (1000 * 60 * 60);
-//        diffTime += difference / (1000 * 60) + " минут";
-//
-//        task.setBusyTime(diffTime);
-//        tasksRepository.save(task);
-//        return "redirect:/tasks/{id}";
-//    }
+    @GetMapping("/tasks/{id}/mark_solved")
+    public String tasksGetMarkSolved(@PathVariable(value = "id") long id,
+                                     @AuthenticationPrincipal Users user,
+                                     Model model) {
+        Tasks task = tasksRepository.findById(id).orElseThrow();
+        if (task.getUserSelectedTheTask() != null &&
+                user.getUsername().equals(task.getUserSelectedTheTask().getUsername()) ||
+                user.hasRoleAdministrator()) {
+            task.setStatus(Statuses.COMPLETED);
+            tasksRepository.save(task);
+        }
+
+        return "redirect:/tasks/{id}";
+    }
 
 
     @GetMapping("/tasks/{id}/get_task_cancel")
     public String tasksGetGetTaskCancel(@PathVariable(value = "id") long id,
-                                        //@AuthenticationPrincipal Users user,
+                                        @AuthenticationPrincipal Users user,
                                         Model model) {
+
         Tasks task = tasksRepository.findById(id).orElseThrow();
-        task.setUserSelectedTheTask(null);
-        tasksRepository.save(task);
+        if (task.getUserSelectedTheTask() != null &&
+                user.getUsername().equals(task.getUserSelectedTheTask().getUsername()) ||
+                user.hasRoleAdministrator()) {
+            task.setUserSelectedTheTask(null);
+            task.setStatus(Statuses.DISTRIBUTED);
+            tasksRepository.save(task);
+        }
+
         return "redirect:/tasks/{id}";
     }
 
@@ -201,73 +265,128 @@ public class TasksController {
 
 
     @GetMapping("/tasks/{id}/set_planned_time")
-    public String tasksGetSetPlannedTime(@PathVariable(value = "id") long id,
-                                        Model model) {
-        return "tasks-set-planned-time";
-    }
-
-    @PostMapping("/tasks/{id}/set_planned_time")
-    public String tasksPostSetPlannedTime(@PathVariable(value = "id") long id,
-                                         @RequestParam(required = false, defaultValue = "0") int days,
-                                         @RequestParam(required = false, defaultValue = "0") int hours,
-                                         @RequestParam(required = false, defaultValue = "0") int minutes,
+    public String tasksGetSetPlannedTime(@AuthenticationPrincipal Users user,
+                                         @PathVariable(value = "id") long id,
                                          Model model) {
         if (!tasksRepository.existsById(id)) {
             return "redirect:/tasks";
         }
         Tasks task = tasksRepository.findById(id).orElseThrow();
-        Timer timer = new Timer(days, hours, minutes, task);
-        task.setPlannedTime(timer);
+        model.addAttribute("task", task);
 
-        tasksRepository.save(task); // сохранение нового объекта
+        Tasks currentTask = tasksRepository.findById(id).orElseThrow();
+        if (user.getUsername().equals(currentTask.getAuthor().getUsername()) || user.hasRoleAdministrator()) {
+            model.addAttribute("iAmAuthor", "true");
+        }
+
+
+        return "tasks-set-planned-time";
+    }
+
+
+
+    @PostMapping("/tasks/{id}/set_planned_time")
+    public String tasksPostSetPlannedTime(@AuthenticationPrincipal Users user,
+                                          @PathVariable(value = "id") long id,
+                                          @RequestParam(required = false, defaultValue = "0") int daysOfPlannedTime,
+                                          @RequestParam(required = false, defaultValue = "0") int hoursOfPlannedTime,
+                                          @RequestParam(required = false, defaultValue = "0") int minutesOfPlannedTime,
+                                         Model model) {
+        if (!tasksRepository.existsById(id)) {
+            return "redirect:/tasks";
+        }
+        Tasks task = tasksRepository.findById(id).orElseThrow();
+        if (user.getUsername().equals(task.getAuthor().getUsername()) || user.hasRoleAdministrator()) {
+            Timer timer = new Timer(daysOfPlannedTime, hoursOfPlannedTime, minutesOfPlannedTime);
+            task.setPlannedTime(timer);
+
+            tasksRepository.save(task); // сохранение нового объекта
+        }
+
         return "redirect:/tasks/" + task.getTaskId();
     }
 
 
     @GetMapping("/tasks/{id}/change_actual_time")
-    public String tasksGetChangeActualTime(@PathVariable(value = "id") long id,
-                                         Model model) {
+    public String tasksGetChangeActualTime(@AuthenticationPrincipal Users user,
+                                           @PathVariable(value = "id") long id,
+                                           Model model) {
+        if (!tasksRepository.existsById(id)) {
+            return "redirect:/tasks";
+        }
+        Tasks task = tasksRepository.findById(id).orElseThrow();
+
+        if (task.getUserSelectedTheTask() != null) {
+            if (user.getUsername().equals(task.getUserSelectedTheTask().getUsername())  ||
+                    user.hasRoleAdministrator()) {
+                model.addAttribute("iSelectedTask", "true");
+            }
+        }
+
+        model.addAttribute("task", task);
         return "tasks-change-actual-time";
     }
 
+
+
     @PostMapping("/tasks/{id}/change_actual_time")
-    public String tasksPostChangeActualTime(@PathVariable(value = "id") long id,
-                                          @RequestParam(required = false, defaultValue = "0") int days,
-                                          @RequestParam(required = false, defaultValue = "0") int hours,
-                                          @RequestParam(required = false, defaultValue = "0") int minutes,
+    public String tasksPostChangeActualTime(@AuthenticationPrincipal Users user,
+                                            @PathVariable(value = "id") long id,
+                                            @RequestParam(required = false, defaultValue = "0") int daysOfActualTime,
+                                            @RequestParam(required = false, defaultValue = "0") int hoursOfActualTime,
+                                            @RequestParam(required = false, defaultValue = "0") int minutesOfActualTime,
                                           Model model) {
         if (!tasksRepository.existsById(id)) {
             return "redirect:/tasks";
         }
         Tasks task = tasksRepository.findById(id).orElseThrow();
-        Timer timer = new Timer(days, hours, minutes, null);
-        task.setActualTime(timer);
+        if (task.getUserSelectedTheTask() != null) {
+            if (user.getUsername().equals(task.getUserSelectedTheTask().getUsername())  ||
+                    user.hasRoleAdministrator()) {
+                Timer timer = new Timer(daysOfActualTime, hoursOfActualTime, minutesOfActualTime);
+                task.setActualTime(timer);
 
-        tasksRepository.save(task); // сохранение нового объекта
+                tasksRepository.save(task); // сохранение нового объекта
+            }
+        }
+
         return "redirect:/tasks/" + task.getTaskId();
     }
 
 
 
     @GetMapping("/tasks/{id}/add_actual_time")
-    public String tasksGetAddActualTime(@PathVariable(value = "id") long id,
-                                           Model model) {
+    public String tasksGetAddActualTime(@AuthenticationPrincipal Users user,
+                                        @PathVariable(value = "id") long id,
+                                        Model model) {
+        Tasks task = tasksRepository.findById(id).orElseThrow();
+        if (task.getUserSelectedTheTask() != null) {
+            if (user.getUsername().equals(task.getUserSelectedTheTask().getUsername()) ||
+                    user.hasRoleAdministrator()) {
+                model.addAttribute("iSelectedTask", "true");
+            }
+        }
         return "tasks-add-actual-time";
     }
 
     @PostMapping("/tasks/{id}/add_actual_time")
-    public String tasksPostAddActualTime(@PathVariable(value = "id") long id,
-                                            @RequestParam(required = false, defaultValue = "0") int hours,
-                                            @RequestParam(required = false, defaultValue = "0") int minutes,
+    public String tasksPostAddActualTime(@AuthenticationPrincipal Users user,
+                                         @PathVariable(value = "id") long id,
+                                         @RequestParam(required = false, defaultValue = "0") int hoursOfActualTime,
+                                         @RequestParam(required = false, defaultValue = "0") int minutesOfActualTime,
                                             Model model) {
         if (!tasksRepository.existsById(id)) {
             return "redirect:/tasks";
         }
         Tasks task = tasksRepository.findById(id).orElseThrow();
-        task.getActualTime().addTime(hours, minutes);
+        if (task.getUserSelectedTheTask() != null) {
+            if (user.getUsername().equals(task.getUserSelectedTheTask().getUsername()) ||
+                    user.hasRoleAdministrator()) {
+                task.getActualTime().addTime(hoursOfActualTime, minutesOfActualTime);
+                tasksRepository.save(task); // сохранение нового объекта
+            }
+        }
 
-
-        tasksRepository.save(task); // сохранение нового объекта
         return "redirect:/tasks/" + task.getTaskId();
     }
 

@@ -13,7 +13,7 @@ public class Timer {
     private int hours = 0;
     private int minutes = 0;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(/*fetch = FetchType.EAGER*/)
     @JoinColumn(name = "taskId")
     private Tasks task;
 
@@ -25,6 +25,12 @@ public class Timer {
         this.hours = hours;
         this.minutes = minutes;
         this.task = task;
+    }
+
+    public Timer(int days, int hours, int minutes) {
+        this.days = days;
+        this.hours = hours;
+        this.minutes = minutes;
     }
 
     public Long getTimerId() {

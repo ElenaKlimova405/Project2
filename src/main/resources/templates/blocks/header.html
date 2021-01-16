@@ -18,27 +18,50 @@
         <nav class="my-2 my-md-0 me-md-3">
             <a class="p-3 text-dark" href="/">Главная страница</a>
             <a class="p-3 text-dark" href="/tasks">Задачи</a>
-            <a class="p-3 text-dark" href="/users">Пользователи</a>
             <a class="p-3 text-dark" href="/tasks/add">Добавить новую задачу</a>
+            <a class="p-3 text-dark" href="/users">Пользователи</a>
 <!--            <a class="p-3 text-dark" href="/users/add">Добавить нового пользователя</a>-->
             <a class="p-3 text-dark" href="/about">Про нас</a>
+
+
         </nav>
 
-        <nav class="my-2 my-md-0 me-md-3">
-            <div th:if="${#httpServletRequest.remoteUser}">
-                <h3 th:inline="text">Hello, [[${#httpServletRequest.remoteUser}]]!</h3>
-                <a class="btn btn-outline-primary" href="/users/my_account">Мой аккаунт</a>
-                <form th:action="@{/logout}" method="post">
-                    <button class="btn btn-danger" type="submit">Выйти</button>
-                </form>
+
+
+
+
+
+
+
+
+        <!--                    <div class="float-right">-->
+<!--        <nav class="my-2 my-md-0 me-md-3">-->
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+                <div th:if="!${#httpServletRequest.remoteUser}">
+                    <div class="btn-group mr-2" role="group" aria-label="First group">
+                        <a class="btn btn-outline-primary" href="/login">Войти</a>
+                        <a class="btn btn-outline-primary" href="/registration">Зарегистрироваться</a>
+                    </div>
+                </div>
+
+                <div th:if="${#httpServletRequest.remoteUser}">
+                    <div class="btn-group mr-2" role="group" aria-label="Second group">
+                        <a class="btn btn-outline-primary" href="/users/my_account">Мой аккаунт</a>
+                        <form th:action="@{/logout}" method="post">
+                            <button class="btn btn-outline-danger" type="submit">Выйти</button>
+                        </form>
+                    </div>
+                </div>
+
             </div>
+<!--        </nav>-->
+        <!--                    </div>-->
 
-            <a class="btn btn-outline-primary" href="/login">Войти</a>
-            <a class="btn btn-outline-primary" href="/registration">Зарегистрироваться</a>
-            <!--            <a class="btn btn-danger" href="/logout" type="submit">Выйти</a>-->
-
-
-        </nav>
 
     </header>
+
+
+
+
 </div>

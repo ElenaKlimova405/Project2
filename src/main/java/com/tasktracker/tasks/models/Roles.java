@@ -6,9 +6,19 @@ import javax.persistence.*;
 
 
 public enum Roles implements GrantedAuthority {
-    USER,
-    ADMINISTRATOR,
-    PROGRAMMER;
+    USER("Пользователь"),
+    ADMINISTRATOR("Администратор"),
+    PROGRAMMER("Программист");
+
+    private String enumName;
+
+    Roles(String enumName) {
+        this.enumName = enumName;
+    }
+
+    public String getEnumName() {
+        return enumName;
+    }
 
     @Override
     public String getAuthority() {
