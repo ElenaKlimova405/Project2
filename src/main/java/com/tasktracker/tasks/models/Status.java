@@ -1,13 +1,13 @@
 package com.tasktracker.tasks.models;
 
-public enum Statuses {
+public enum Status {
     DISTRIBUTED ("Раздается"),
     TAKEN ("Взята"),
     COMPLETED ("Выполнена");
 
     private String enumName;
 
-    Statuses(String enumName) {
+    Status(String enumName) {
         this.enumName = enumName;
     }
 

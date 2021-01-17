@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
-public class Users implements UserDetails {
+@Table(name = "usr")
+public class User implements UserDetails {
 //    @Id
 //    @SequenceGenerator(name = "userIdSequenceGen",
 //            sequenceName="userIdSequence", initialValue = 2)
@@ -25,10 +25,10 @@ public class Users implements UserDetails {
     private String password;
     private boolean active = true;
 
-    @ElementCollection(targetClass = Roles.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "userRole", joinColumns = @JoinColumn(name = "userId"))
     @Enumerated(EnumType.STRING)
-    private Set<Roles> roles;
+    private Set<Role> roles;
 
     private String eMail;
     private String activationCode;
@@ -38,31 +38,49 @@ public class Users implements UserDetails {
     private String lastName;
     private String secondName;
     private String aboutMe;
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JsonIgnore
-    @Column(name = "createdTaskId")
-    private List<Tasks> createdTasks;
-    @OneToMany(mappedBy = "userSelectedTheTask"/*, cascade = CascadeType.ALL, orphanRemoval = true*/)
-    //@JsonIgnore
-    @Column(name = "selectedTaskId")
-    private List<Tasks> selectedTasks;
 
-    public Users() {
+
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    //@JoinColumn(name = "authorId")
+    @Column(name = "authorId")
+    private List<Author> author;
+
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    //@JoinColumn(name = "userSelectedTheTaskId")
+    @Column(name = "userSelectedTheTaskId")
+    private List<UserSelectedTheTask> userSelectedTheTask;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public User() {
     }
 
-
-    public Users(String username, String password, boolean active, Set<Roles> roles, String eMail, String firstName, String lastName, String secondName, String aboutMe, List<Tasks> createdTasks, List<Tasks> selectedTasks) {
+    public User(String username, String password, boolean active, Set<Role> roles, String eMail, String activationCode, String firstName, String lastName, String secondName, String aboutMe, List<Author> author, List<UserSelectedTheTask> userSelectedTheTask) {
         this.username = username;
         this.password = password;
         this.active = active;
         this.roles = roles;
         this.eMail = eMail;
+        this.activationCode = activationCode;
         this.firstName = firstName;
         this.lastName = lastName;
         this.secondName = secondName;
         this.aboutMe = aboutMe;
-        this.createdTasks = createdTasks;
-        this.selectedTasks = selectedTasks;
+        this.author = author;
+        this.userSelectedTheTask = userSelectedTheTask;
     }
 
     public Long getUserId() {
@@ -99,11 +117,11 @@ public class Users implements UserDetails {
         this.active = active;
     }
 
-    public Set<Roles> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Roles> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
@@ -155,21 +173,36 @@ public class Users implements UserDetails {
         this.aboutMe = aboutMe;
     }
 
-    public List<Tasks> getCreatedTasks() {
-        return createdTasks;
+    public String geteMail() {
+        return eMail;
     }
 
-    public void setCreatedTasks(List<Tasks> createdTasks) {
-        this.createdTasks = createdTasks;
+    public void seteMail(String eMail) {
+        this.eMail = eMail;
     }
 
-    public List<Tasks> getSelectedTasks() {
-        return selectedTasks;
+    public List<Author> getAuthor() {
+        return author;
     }
 
-    public void setSelectedTasks(List<Tasks> selectedTasks) {
-        this.selectedTasks = selectedTasks;
+    public void setAuthor(List<Author> author) {
+        this.author = author;
     }
+
+    public List<UserSelectedTheTask> getUserSelectedTheTask() {
+        return userSelectedTheTask;
+    }
+
+    public void setUserSelectedTheTask(List<UserSelectedTheTask> userSelectedTheTask) {
+        this.userSelectedTheTask = userSelectedTheTask;
+    }
+
+
+
+
+
+
+
 
 
     @Override
@@ -192,18 +225,19 @@ public class Users implements UserDetails {
         return true;
     }
 
+
     @Override
     public boolean isEnabled() {
         return this.isActive();
     }
 
-    public boolean equalsdLoginAndPasswordAndRole(Users user) {
+    public boolean equalsdLoginAndPasswordAndRole(User user) {
         if (
                 user != null &&
                 this.getUsername().equals(user.getUsername()) &&
                 this.getPassword().equals(user.getPassword())
         ) {
-            for (Roles role : this.getRoles()) {
+            for (Role role : this.getRoles()) {
                 if (
                         user.getRoles().containsAll(this.getRoles())
                 ) {
@@ -215,8 +249,8 @@ public class Users implements UserDetails {
     }
 
 
-    public boolean hasRole(Roles role) {
-        for (Roles role1 : this.getRoles()) {
+    public boolean hasRole(Role role) {
+        for (Role role1 : this.getRoles()) {
             if (role1.equals(role))
                 return true;
         }
@@ -224,24 +258,24 @@ public class Users implements UserDetails {
     }
 
     public boolean hasRoleUser() {
-        for (Roles role1 : this.getRoles()) {
-            if (role1.equals(Roles.USER))
+        for (Role role1 : this.getRoles()) {
+            if (role1.equals(Role.USER))
                 return true;
         }
         return false;
     }
 
     public boolean hasRoleAdministrator() {
-        for (Roles role1 : this.getRoles()) {
-            if (role1.equals(Roles.ADMINISTRATOR))
+        for (Role role1 : this.getRoles()) {
+            if (role1.equals(Role.ADMINISTRATOR))
                 return true;
         }
         return false;
     }
 
     public boolean hasRoleProgrammer() {
-        for (Roles role1 : this.getRoles()) {
-            if (role1.equals(Roles.PROGRAMMER))
+        for (Role role1 : this.getRoles()) {
+            if (role1.equals(Role.PROGRAMMER))
                 return true;
         }
         return false;

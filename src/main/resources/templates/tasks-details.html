@@ -139,7 +139,7 @@
                 <div id="collapseName31" class="collapse" aria-labelledby="headingName31" data-parent="#accordionName1">
                     <div class="card-body">
                         <div th:each="currentAuthor : ${elem.getAuthor}" class="alert alert-primary">
-                            <a th:href="'/users/' + ${currentAuthor.getUserId}" class="alert-link">[[${currentAuthor.username}]]</a>
+                            <a th:href="'/users/' + ${currentAuthor.getUser.getUserId}" class="alert-link">[[${currentAuthor.getUser.username}]]</a>
                         </div>
                     </div>
                 </div>
@@ -167,7 +167,7 @@
                 <div id="collapseName41" class="collapse" aria-labelledby="headingName41" data-parent="#accordionName1">
                     <div class="card-body">
                         <div th:each="currentUserSelectedTheTask : ${elem.getUserSelectedTheTask}" class="alert alert-primary">
-                            <a th:href="'/users/' + ${currentUserSelectedTheTask.getUserId}" class="alert-link">[[${currentUserSelectedTheTask.username}]]</a>
+                            <a th:href="'/users/' + ${currentUserSelectedTheTask.getUser.getUserId}" class="alert-link">[[${currentUserSelectedTheTask.getUser.username}]]</a>
                         </div>
                     </div>
                 </div>
@@ -200,7 +200,7 @@
                 </div>
                 <div id="collapseName51" class="collapse" aria-labelledby="headingName51" data-parent="#accordionName1">
                     <div class="card-body">
-                        <p th:text="${elem.plannedTime.days} + ' дней ' + ${elem.plannedTime.hours} + ' часов ' + ${elem.plannedTime.minutes} + ' минут '"/>
+                        <p th:text="${elem.plannedTime.getTimer.getDays} + ' дней ' + ${elem.plannedTime.getTimer.getHours} + ' часов ' + ${elem.plannedTime.getTimer.getMinutes} + ' минут '"/>
 
 
                         <div th:if="${iAmAuthor}">
@@ -235,7 +235,7 @@
                 </div>
                 <div id="collapseName61" class="collapse" aria-labelledby="headingName61" data-parent="#accordionName1">
                     <div class="card-body">
-                        <p th:text="${elem.actualTime.days} + ' дней ' + ${elem.actualTime.hours} + ' часов ' + ${elem.actualTime.minutes} + ' минут '"/>
+                        <p th:text="${elem.actualTime.getTimer.getDays} + ' дней ' + ${elem.actualTime.getTimer.getHours} + ' часов ' + ${elem.actualTime.getTimer.getMinutes} + ' минут '"/>
 
 
                         <div th:if="${iSelectedTask}">

@@ -1,29 +1,23 @@
 package com.tasktracker.tasks.service;
 
-import com.tasktracker.tasks.models.Roles;
-import com.tasktracker.tasks.models.Users;
-import com.tasktracker.tasks.repo.UsersRepository;
+import com.tasktracker.tasks.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
 @Service
 public class UsersService implements UserDetailsService {
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
 //    @Autowired
 //    Users root;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usersRepository.findByUsername(username);
+        return userRepository.findByUsername(username);
     }
 
 //    public void checkAdminAccount() {

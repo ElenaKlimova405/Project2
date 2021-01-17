@@ -35,11 +35,11 @@
         <form method="post">
             <div class="jumbotron">
                 <h2>Установка планируемого времени работы над задачей</h2><br>
-                <input type="text" th:value="${task.getPlannedTime.getDays}" name="daysOfPlannedTime" placeholder="Введите количество дней"
+                <input type="text" th:value="${task.getPlannedTime.getTimer.getDays}" name="daysOfPlannedTime" placeholder="Введите количество дней"
                        class="form-control"><br>
-                <input type="text" th:value="${task.getPlannedTime.getHours}" name="hoursOfPlannedTime" placeholder="Введите количество часов"
+                <input type="text" th:value="${task.getPlannedTime.getTimer.getHours}" name="hoursOfPlannedTime" placeholder="Введите количество часов"
                        class="form-control"><br>
-                <input type="text" th:value="${task.getPlannedTime.getMinutes}" name="minutesOfPlannedTime" placeholder="Введите количество минут"
+                <input type="text" th:value="${task.getPlannedTime.getTimer.getMinutes}" name="minutesOfPlannedTime" placeholder="Введите количество минут"
                        class="form-control"><br>
             </div>
             <button type="submit" class="btn btn-success">Задать время</button>

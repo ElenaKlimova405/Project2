@@ -34,7 +34,7 @@
     <h1>Список задач</h1>
     <div th:each="elem : ${parentTasks}" class="alert alert-info mt-2">
         <h2 th:text="${elem.getTaskName}"/>
-        <h3 th:text="'Автор: ' + ${elem.getAuthor.getUsername}"/>
+        <h3 th:text="'Автор: ' + ${elem.getAuthor.getUser.getUsername}"/>
         <p th:text="${elem.getTaskPreview}"/>
         <p><b>Просмотры: </b><span th:text="${elem.getViews}"/></p><br>
 

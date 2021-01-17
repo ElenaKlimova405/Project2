@@ -182,8 +182,8 @@
                 <div id="collapseName5" class="collapse" aria-labelledby="headingName5" data-parent="#accordionName1">
                     <div class="card-body">
 
-                        <div th:each="currentTask : ${elem.createdTasks}" class="alert alert-primary">
-                            <a th:href="'/tasks/' + ${currentTask.taskId}" class="alert-link">[[${currentTask.taskName}]]</a>
+                        <div th:each="currentAuthor : ${elem.getAuthor}" class="alert alert-primary">
+                            <a th:href="'/tasks/' + ${currentAuthor.getTask.taskId}" class="alert-link">[[${currentAuthor.getTask.taskName}]]</a>
                         </div>
 
                     </div>
@@ -214,10 +214,9 @@
                 <div id="collapseName6" class="collapse" aria-labelledby="headingName6" data-parent="#accordionName1">
                     <div class="card-body">
 
-                        <div th:each="selectedTask : ${elem.selectedTasks}" class="alert alert-primary">
-                            <a th:href="'/tasks/' + ${selectedTask.taskId}" class="alert-link">[[${selectedTask.taskName}]]</a>
+                        <div th:each="userSelectedTheTask : ${elem.getUserSelectedTheTask}" class="alert alert-primary">
+                            <a th:href="'/tasks/' + ${userSelectedTheTask.getTask.taskId}" class="alert-link">[[${userSelectedTheTask.getTask.taskName}]]</a>
                         </div>
-                        <br>
 
                     </div>
                 </div>

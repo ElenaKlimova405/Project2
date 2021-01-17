@@ -1,13 +1,13 @@
 package com.tasktracker.tasks.additional_classes;
 
-import com.tasktracker.tasks.models.Tasks;
+import com.tasktracker.tasks.models.Task;
 
 public class Triple {
     String number = "";
-    Tasks task;
+    Task task;
     boolean isLeaf = false;
 
-    public Triple(String number, Tasks task, boolean isLeaf) {
+    public Triple(String number, Task task, boolean isLeaf) {
         this.number = number;
         this.task = task;
         this.isLeaf = isLeaf;
@@ -21,11 +21,11 @@ public class Triple {
         this.number = number;
     }
 
-    public Tasks getTask() {
+    public Task getTask() {
         return task;
     }
 
-    public void setTask(Tasks task) {
+    public void setTask(Task task) {
         this.task = task;
     }
 

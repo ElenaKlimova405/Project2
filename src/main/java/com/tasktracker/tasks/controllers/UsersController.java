@@ -1,13 +1,11 @@
 package com.tasktracker.tasks.controllers;
 
-import com.tasktracker.tasks.models.Roles;
-import com.tasktracker.tasks.models.Users;
-import com.tasktracker.tasks.repo.UsersRepository;
+import com.tasktracker.tasks.models.*;
+import com.tasktracker.tasks.repo.TaskRepository;
+import com.tasktracker.tasks.repo.UserRepository;
 import com.tasktracker.tasks.service.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,17 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.management.relation.RoleList;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
+import javax.persistence.EntityManager;
+import java.util.Iterator;
 
 @Controller
 public class UsersController {
     @Autowired
-    public UsersRepository usersRepository;
+    public UserRepository userRepository;
 
     @Autowired
     private MailSender mailSender;
@@ -34,10 +28,15 @@ public class UsersController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @GetMapping("/users")
     public String usersMain(Model model) {
-        Iterable<Users> users = usersRepository.findAll();
+        Iterable<User> users = userRepository.findAll();
         model.addAttribute("users", users);
         return "users-main";
     }
@@ -73,11 +72,11 @@ public class UsersController {
 //    }
 
     @GetMapping("/users/{id}")
-    public String usersDetails(@AuthenticationPrincipal Users userIn,
+    public String usersDetails(@AuthenticationPrincipal User userIn,
                                @PathVariable(value = "id") long idParam,
                                Model model) {
 
-        if (!usersRepository.existsById(idParam)) {
+        if (!userRepository.existsById(idParam)) {
             return "redirect:/users";
         }
 
@@ -93,7 +92,7 @@ public class UsersController {
 //        }
 
 
-        Users user = usersRepository.findById(idParam).orElseThrow();
+        User user = userRepository.findById(idParam).orElseThrow();
         boolean iAmCurrentUser = false;
         boolean iAmAdministrator = false;
 
@@ -123,20 +122,20 @@ public class UsersController {
 
 
     @GetMapping("/users/my_account")
-    public String usersGetMyAccount(@AuthenticationPrincipal Users user, Model model) {
+    public String usersGetMyAccount(@AuthenticationPrincipal User user, Model model) {
         return "redirect:/users/" + user.getUserId();
     }
 
 
     @GetMapping("/users/{id}/edit")
-    public String usersEdit(@AuthenticationPrincipal Users userIn,
+    public String usersEdit(@AuthenticationPrincipal User userIn,
                             @PathVariable(value = "id") long idParam,
                             Model model) {
-        if (!usersRepository.existsById(idParam)) {
+        if (!userRepository.existsById(idParam)) {
             return "redirect:/users";
         }
 
-        Users user = usersRepository.findById(idParam).orElseThrow();
+        User user = userRepository.findById(idParam).orElseThrow();
         boolean iAmCurrentUser = false;
         boolean iAmAdministrator = false;
 
@@ -172,9 +171,9 @@ public class UsersController {
                                   @RequestParam(required = false) String newPassword,
                                   @RequestParam(required = false) String newPassword2,
 
-                                  @AuthenticationPrincipal Users userIn,
+                                  @AuthenticationPrincipal User userIn,
                                   Model model) {
-        Users user = usersRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow();
 
         boolean iAmCurrentUser = false;
         boolean iAmAdministrator = false;
@@ -202,7 +201,7 @@ public class UsersController {
 
             //if (userCheckBox != null) {
             if (!user.hasRoleUser()) {
-                user.getRoles().add(Roles.USER);
+                user.getRoles().add(Role.USER);
             }
 //        } else {
 //            user.getRoles().remove(Roles.USER);
@@ -210,18 +209,18 @@ public class UsersController {
 
             if (programmerCheckBox != null) {
                 if (!user.hasRoleProgrammer()) {
-                    user.getRoles().add(Roles.PROGRAMMER);
+                    user.getRoles().add(Role.PROGRAMMER);
                 }
             } else {
-                user.getRoles().remove(Roles.PROGRAMMER);
+                user.getRoles().remove(Role.PROGRAMMER);
             }
 
             if (administratorCheckBox != null) {
                 if (!user.hasRoleAdministrator()) {
-                    user.getRoles().add(Roles.ADMINISTRATOR);
+                    user.getRoles().add(Role.ADMINISTRATOR);
                 }
             } else {
-                user.getRoles().remove(Roles.ADMINISTRATOR);
+                user.getRoles().remove(Role.ADMINISTRATOR);
             }
 
 
@@ -236,7 +235,7 @@ public class UsersController {
             }
 
 
-            usersRepository.save(user);
+            userRepository.save(user);
 
         /*if (!user.getEMail().isEmpty() && user.getEMail() != null) {
             String message = String.format(
@@ -255,9 +254,9 @@ public class UsersController {
 
     @PostMapping("/users/{id}/remove")
     public String usersGetRemove(@PathVariable(value = "id") long id,
-                                 @AuthenticationPrincipal Users userIn,
+                                 @AuthenticationPrincipal User userIn,
                                  Model model) {
-        Users user = usersRepository.findById(id).orElseThrow();
+        User user = userRepository.findById(id).orElseThrow();
 
         boolean iAmCurrentUser = false;
         boolean iAmAdministrator = false;
@@ -272,7 +271,44 @@ public class UsersController {
 
 
         if (!iAmCurrentUser && iAmAdministrator) {
-            usersRepository.delete(user);
+            if (user.getAuthor() != null) {
+                Iterator<Author> iterator = user.getAuthor().iterator();
+                while (iterator.hasNext()) {
+                    Author currentAuthor = iterator.next();
+                    //userRepository.deleteByAuthor(currentAuthor);
+                    //taskRepository.deleteByAuthor(currentAuthor);
+                    Task byAuthor = taskRepository.findByAuthor(currentAuthor);
+                    if (byAuthor != null) {
+                        taskRepository.delete(byAuthor);
+                    }
+                }
+            }
+
+            if (user.getUserSelectedTheTask() != null) {
+                Iterator<UserSelectedTheTask> iterator = user.getUserSelectedTheTask().iterator();
+                while (iterator.hasNext()) {
+                    UserSelectedTheTask currentUserSelectedTheTask = iterator.next();
+                    //userRepository.deleteByAuthor(currentAuthor);
+                    //taskRepository.deleteByAuthor(currentAuthor);
+                    Task byUserSelectedTheTask = taskRepository.findByUserSelectedTheTask(currentUserSelectedTheTask);
+                    if (byUserSelectedTheTask != null) {
+                        taskRepository.delete(byUserSelectedTheTask);
+                    }
+                }
+            }
+
+            //entityManager.merge(user);
+//            entityManager.refresh(user);
+
+//            entityManager
+//                    .remove(entityManager.contains(user) ? user : entityManager.merge(user));
+//            entityManager
+//                    .remove(entityManager.getReference(User.class, user));
+
+
+
+           userRepository.delete(user);
+
         }
 
         return "redirect:/users";

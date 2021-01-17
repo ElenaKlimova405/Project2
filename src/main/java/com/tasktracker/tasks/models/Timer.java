@@ -13,24 +13,30 @@ public class Timer {
     private int hours = 0;
     private int minutes = 0;
 
-    @OneToOne(/*fetch = FetchType.EAGER*/)
-    @JoinColumn(name = "taskId")
-    private Tasks task;
+    @OneToOne(mappedBy = "timer")
+    @JoinColumn(name = "plannedTimesId")
+    private PlannedTime plannedTime;// подробная информация о планируемом времени
+
+
+    @OneToOne(mappedBy = "timer")
+    @JoinColumn(name = "actualTimesId")
+    private ActualTime actualTime;// подробная информация о фактическом времени
 
     public Timer() {
-    }
-
-    public Timer(int days, int hours, int minutes, Tasks task) {
-        this.days = days;
-        this.hours = hours;
-        this.minutes = minutes;
-        this.task = task;
     }
 
     public Timer(int days, int hours, int minutes) {
         this.days = days;
         this.hours = hours;
         this.minutes = minutes;
+    }
+
+    public Timer(int days, int hours, int minutes, PlannedTime plannedTime, ActualTime actualTime) {
+        this.days = days;
+        this.hours = hours;
+        this.minutes = minutes;
+        this.plannedTime = plannedTime;
+        this.actualTime = actualTime;
     }
 
     public Long getTimerId() {
@@ -65,12 +71,20 @@ public class Timer {
         this.minutes = minutes;
     }
 
-    public Tasks getTask() {
-        return task;
+    public PlannedTime getPlannedTimes() {
+        return plannedTime;
     }
 
-    public void setTask(Tasks task) {
-        this.task = task;
+    public void setPlannedTimes(PlannedTime plannedTime) {
+        this.plannedTime = plannedTime;
+    }
+
+    public ActualTime getActualTimes() {
+        return actualTime;
+    }
+
+    public void setActualTimes(ActualTime actualTime) {
+        this.actualTime = actualTime;
     }
 
     public void addTime(int hours, int minutes) {

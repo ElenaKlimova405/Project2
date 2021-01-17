@@ -1,8 +1,8 @@
 package com.tasktracker.tasks.controllers;
 
-import com.tasktracker.tasks.models.Roles;
-import com.tasktracker.tasks.models.Users;
-import com.tasktracker.tasks.repo.UsersRepository;
+import com.tasktracker.tasks.models.Role;
+import com.tasktracker.tasks.models.User;
+import com.tasktracker.tasks.repo.UserRepository;
 import com.tasktracker.tasks.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 //import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class MainController {
 
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -27,8 +26,8 @@ public class MainController {
 
 
     @Autowired
-    public MainController(UsersRepository usersRepository) {
-        this.usersRepository = usersRepository;
+    public MainController(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
 
@@ -83,7 +82,7 @@ public class MainController {
             @RequestParam(required = true) String password2,
             Model model
     ) {
-        Users userFromDb = usersRepository.findByUsername(username);
+        User userFromDb = userRepository.findByUsername(username);
 
         if (userFromDb != null) {
             model.addAttribute("message", "Данный логин уже занят");
@@ -95,12 +94,12 @@ public class MainController {
             return "registration";
         }
 
-        Users user = new Users();
+        User user = new User();
         user.setUsername(username);
         user.setActive(true);
-        user.setRoles(Collections.singleton(Roles.USER));
+        user.setRoles(Collections.singleton(Role.USER));
         user.setPassword(passwordEncoder.encode(password));
-        usersRepository.save(user);
+        userRepository.save(user);
 
         return "redirect:/login";
     }

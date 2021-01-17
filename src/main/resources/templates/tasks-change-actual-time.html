@@ -32,11 +32,11 @@
     <form method="post">
         <div class="jumbotron">
             <h2>Установка фактического времени работы над задачей</h2><br>
-            <input type="text" th:value="${task.getActualTime.getDays}" name="daysOfActualTime" placeholder="Введите количество дней"
+            <input type="text" th:value="${task.getActualTime.getTimer.getDays}" name="daysOfActualTime" placeholder="Введите количество дней"
                    class="form-control"><br>
-            <input type="text" th:value="${task.getActualTime.getHours}" name="hoursOfActualTime" placeholder="Введите количество часов"
+            <input type="text" th:value="${task.getActualTime.getTimer.getHours}" name="hoursOfActualTime" placeholder="Введите количество часов"
                    class="form-control"><br>
-            <input type="text" th:value="${task.getActualTime.getMinutes}" name="minutesOfActualTime" placeholder="Введите количество минут"
+            <input type="text" th:value="${task.getActualTime.getTimer.getMinutes}" name="minutesOfActualTime" placeholder="Введите количество минут"
                    class="form-control"><br>
         </div>
         <button type="submit" class="btn btn-success">Задать время</button>

@@ -54,18 +54,18 @@
             <div th:each="triple : ${triples}" }>
                 <div th:if="${triple.isLeaf}">
 
-                    <div th:if="${triple.getTask.getActualTime.getTimeAsMinutes <= triple.getTask.getPlannedTime.getTimeAsMinutes && (triple.getTask.getActualTime.getTimeAsMinutes > 0 && triple.getTask.getPlannedTime.getTimeAsMinutes > 0)}">
+                    <div th:if="${triple.getTask.getActualTime.getTimer.getTimeAsMinutes <= triple.getTask.getPlannedTime.getTimer.getTimeAsMinutes && (triple.getTask.getActualTime.getTimer.getTimeAsMinutes > 0 && triple.getTask.getPlannedTime.getTimer.getTimeAsMinutes > 0)}">
                         <tr class="table-success">
                             <td th:text="${triple.getNumber}" />
                             <td>
                                 <a th:href="'/tasks/' + ${triple.getTask.getTaskId}" class="alert-link" th:text="${triple.getTask.getTaskName}"/>
                             </td>
-                            <td th:text="${triple.getTask.getActualTime.getDays} + ' дней ' + ${triple.getTask.getActualTime.getHours} + ' часов ' + ${triple.getTask.getActualTime.getMinutes} + ' минут'" />
-                            <td th:text="${triple.getTask.getPlannedTime.getDays} + ' дней ' + ${triple.getTask.getPlannedTime.getHours} + ' часов ' + ${triple.getTask.getPlannedTime.getMinutes} + ' минут'" />
+                            <td th:text="${triple.getTask.getActualTime.getTimer.getDays} + ' дней ' + ${triple.getTask.getActualTime.getTimer.getHours} + ' часов ' + ${triple.getTask.getActualTime.getTimer.getMinutes} + ' минут'" />
+                            <td th:text="${triple.getTask.getPlannedTime.getTimer.getDays} + ' дней ' + ${triple.getTask.getPlannedTime.getTimer.getHours} + ' часов ' + ${triple.getTask.getPlannedTime.getTimer.getMinutes} + ' минут'" />
                             <td th:text="${triple.getTask.getStatus.getEnumName}"/>
                             <div th:if="${triple.getTask.getUserSelectedTheTask}">
                                 <td>
-                                    <a th:href="'/users/' + ${triple.getTask.getUserSelectedTheTask.getUserId}" class="alert-link" th:text="${triple.getTask.getUserSelectedTheTask.getUsername}"/>
+                                    <a th:href="'/users/' + ${triple.getTask.getUserSelectedTheTask.getUser.getUserId}" class="alert-link" th:text="${triple.getTask.getUserSelectedTheTask.getUser.getUsername}"/>
                                 </td>
                             </div>
                             <div th:if="!${triple.getTask.getUserSelectedTheTask}">
@@ -74,18 +74,18 @@
                         </tr>
                     </div>
 
-                    <div th:if="${triple.getTask.getActualTime.getTimeAsMinutes > triple.getTask.getPlannedTime.getTimeAsMinutes && (triple.getTask.getActualTime.getTimeAsMinutes > 0 && triple.getTask.getPlannedTime.getTimeAsMinutes > 0)}">
+                    <div th:if="${triple.getTask.getActualTime.getTimer.getTimeAsMinutes > triple.getTask.getPlannedTime.getTimer.getTimeAsMinutes && (triple.getTask.getActualTime.getTimer.getTimeAsMinutes > 0 && triple.getTask.getPlannedTime.getTimer.getTimeAsMinutes > 0)}">
                         <tr class="table-danger">
                             <td th:text="${triple.getNumber}" />
                             <td>
                                 <a th:href="'/tasks/' + ${triple.getTask.getTaskId}" class="alert-link" th:text="${triple.getTask.getTaskName}"/>
                             </td>
-                            <td th:text="${triple.getTask.getActualTime.getDays} + ' дней ' + ${triple.getTask.getActualTime.getHours} + ' часов ' + ${triple.getTask.getActualTime.getMinutes} + ' минут'" />
-                            <td th:text="${triple.getTask.getPlannedTime.getDays} + ' дней ' + ${triple.getTask.getPlannedTime.getHours} + ' часов ' + ${triple.getTask.getPlannedTime.getMinutes} + ' минут'" />
+                            <td th:text="${triple.getTask.getActualTime.getTimer.getDays} + ' дней ' + ${triple.getTask.getActualTime.getTimer.getHours} + ' часов ' + ${triple.getTask.getActualTime.getTimer.getMinutes} + ' минут'" />
+                            <td th:text="${triple.getTask.getPlannedTime.getTimer.getDays} + ' дней ' + ${triple.getTask.getPlannedTime.getTimer.getHours} + ' часов ' + ${triple.getTask.getPlannedTime.getTimer.getMinutes} + ' минут'" />
                             <td th:text="${triple.getTask.getStatus.getEnumName}"/>
                             <div th:if="${triple.getTask.getUserSelectedTheTask}">
                                 <td>
-                                    <a th:href="'/users/' + ${triple.getTask.getUserSelectedTheTask.getUserId}" class="alert-link" th:text="${triple.getTask.getUserSelectedTheTask.getUsername}"/>
+                                    <a th:href="'/users/' + ${triple.getTask.getUserSelectedTheTask.getUser.getUserId}" class="alert-link" th:text="${triple.getTask.getUserSelectedTheTask.getUser.getUsername}"/>
                                 </td>
                             </div>
                             <div th:if="!${triple.getTask.getUserSelectedTheTask}">
@@ -94,18 +94,18 @@
                         </tr>
                     </div>
 
-                    <div th:if="${(triple.getTask.getActualTime.getTimeAsMinutes == 0 || triple.getTask.getPlannedTime.getTimeAsMinutes == 0)}">
+                    <div th:if="${(triple.getTask.getActualTime.getTimer.getTimeAsMinutes == 0 || triple.getTask.getPlannedTime.getTimer.getTimeAsMinutes == 0)}">
                         <tr class="table-warning">
                             <td th:text="${triple.getNumber}" />
                             <td>
                                 <a th:href="'/tasks/' + ${triple.getTask.getTaskId}" class="alert-link" th:text="${triple.getTask.getTaskName}"/>
                             </td>
-                            <td th:text="${triple.getTask.getActualTime.getDays} + ' дней ' + ${triple.getTask.getActualTime.getHours} + ' часов ' + ${triple.getTask.getActualTime.getMinutes} + ' минут'" />
-                            <td th:text="${triple.getTask.getPlannedTime.getDays} + ' дней ' + ${triple.getTask.getPlannedTime.getHours} + ' часов ' + ${triple.getTask.getPlannedTime.getMinutes} + ' минут'" />
+                            <td th:text="${triple.getTask.getActualTime.getTimer.getDays} + ' дней ' + ${triple.getTask.getActualTime.getTimer.getHours} + ' часов ' + ${triple.getTask.getActualTime.getTimer.getMinutes} + ' минут'" />
+                            <td th:text="${triple.getTask.getPlannedTime.getTimer.getDays} + ' дней ' + ${triple.getTask.getPlannedTime.getTimer.getHours} + ' часов ' + ${triple.getTask.getPlannedTime.getTimer.getMinutes} + ' минут'" />
                             <td th:text="${triple.getTask.getStatus.getEnumName}"/>
                             <div th:if="${triple.getTask.getUserSelectedTheTask}">
                                 <td>
-                                    <a th:href="'/users/' + ${triple.getTask.getUserSelectedTheTask.getUserId}" class="alert-link" th:text="${triple.getTask.getUserSelectedTheTask.getUsername}"/>
+                                    <a th:href="'/users/' + ${triple.getTask.getUserSelectedTheTask.getUser.getUserId}" class="alert-link" th:text="${triple.getTask.getUserSelectedTheTask.getUser.getUsername}"/>
                                 </td>
                             </div>
                             <div th:if="!${triple.getTask.getUserSelectedTheTask}">
@@ -123,12 +123,12 @@
                         <td>
                             <a th:href="'/tasks/' + ${triple.getTask.getTaskId}" class="alert-link" th:text="${triple.getTask.getTaskName}"/>
                         </td>
-                        <td th:text="${triple.getTask.getActualTime.getDays} + ' дней ' + ${triple.getTask.getActualTime.getHours} + ' часов ' + ${triple.getTask.getActualTime.getMinutes} + ' минут'" />
-                        <td th:text="${triple.getTask.getPlannedTime.getDays} + ' дней ' + ${triple.getTask.getPlannedTime.getHours} + ' часов ' + ${triple.getTask.getPlannedTime.getMinutes} + ' минут'" />
+                        <td th:text="${triple.getTask.getActualTime.getTimer.getDays} + ' дней ' + ${triple.getTask.getActualTime.getTimer.getHours} + ' часов ' + ${triple.getTask.getActualTime.getTimer.getMinutes} + ' минут'" />
+                        <td th:text="${triple.getTask.getPlannedTime.getTimer.getDays} + ' дней ' + ${triple.getTask.getPlannedTime.getTimer.getHours} + ' часов ' + ${triple.getTask.getPlannedTime.getTimer.getMinutes} + ' минут'" />
                         <td th:text="${triple.getTask.getStatus.getEnumName}"/>
                         <div th:if="${triple.getTask.getUserSelectedTheTask}">
                             <td>
-                                <a th:href="'/users/' + ${triple.getTask.getUserSelectedTheTask.getUserId}" class="alert-link" th:text="${triple.getTask.getUserSelectedTheTask.getUsername}"/>
+                                <a th:href="'/users/' + ${triple.getTask.getUserSelectedTheTask.getUser.getUserId}" class="alert-link" th:text="${triple.getTask.getUserSelectedTheTask.getUser.getUsername}"/>
                             </td>
                         </div>
                         <div th:if="!${triple.getTask.getUserSelectedTheTask}">
