@@ -1,10 +1,15 @@
 package com.tasktracker.tasks.controllers;
 
+import com.tasktracker.tasks.config.WebSecurityConfig;
 import com.tasktracker.tasks.models.*;
 import com.tasktracker.tasks.repo.TaskRepository;
 import com.tasktracker.tasks.repo.UserRepository;
 import com.tasktracker.tasks.service.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -147,6 +152,9 @@ public class UsersController {
             iAmAdministrator = true;
         }
 
+        if (iAmAdministrator) {
+            model.addAttribute("iAmAdministrator", "true");
+        }
         if (iAmCurrentUser || iAmAdministrator) {
             model.addAttribute("iCanEdit", "true");
         }
@@ -224,15 +232,51 @@ public class UsersController {
             }
 
 
-            if (!(oldPassword != null && newPassword != null && newPassword2 != null) &&
-                    !(oldPassword == null && newPassword == null && newPassword2 == null)) {
-                model.addAttribute("ATTENTION", "Пароли введены неверно");
-            } else {
-                String encodedPassword = passwordEncoder.encode(oldPassword);
-                if (newPassword.equals(newPassword2) && encodedPassword.equals(user.getPassword())) {
-                    user.setPassword(passwordEncoder.encode(newPassword));
+
+            // here
+
+            String encodedPassword = passwordEncoder.encode(oldPassword);
+            String hasPassword = user.getPassword();
+
+            if (!newPassword.isEmpty() &&
+                    !newPassword2.isEmpty() &&
+                    newPassword.equals(newPassword2) &&
+//                    (passwordEncoder.encode(oldPassword)).equals(user.getPassword())
+                    encodedPassword.equals(hasPassword)
+            ) {
+                user.setPassword(passwordEncoder.encode(newPassword));
+//                model.addAttribute("messageSuccess", "Пароли успешно изменены");
+            }
+            else {
+                if (!(newPassword.isEmpty() && newPassword2.isEmpty())) {
+
+
+                    iAmCurrentUser = false;
+                    iAmAdministrator = false;
+
+                    if (userIn.getUsername().equals(user.getUsername())) {
+                        iAmCurrentUser = true;
+                    }
+
+                    if (userIn.hasRoleAdministrator()) {
+                        iAmAdministrator = true;
+                    }
+
+                    if (iAmAdministrator) {
+                        model.addAttribute("iAmAdministrator", "true");
+                    }
+                    if (iAmCurrentUser || iAmAdministrator) {
+                        model.addAttribute("iCanEdit", "true");
+                    }
+
+                    model.addAttribute("user", user);
+                    model.addAttribute("ATTENTION", "Пароли введены неверно");
+
+
+                    return "users-edit";
                 }
             }
+
 
 
             userRepository.save(user);
@@ -252,6 +296,8 @@ public class UsersController {
         return "redirect:/users/" + user.getUserId();
     }
 
+
+
     @PostMapping("/users/{id}/remove")
     public String usersGetRemove(@PathVariable(value = "id") long id,
                                  @AuthenticationPrincipal User userIn,
@@ -270,6 +316,7 @@ public class UsersController {
         }
 
 
+        // here
         if (!iAmCurrentUser && iAmAdministrator) {
             if (user.getAuthor() != null) {
                 Iterator<Author> iterator = user.getAuthor().iterator();
@@ -297,11 +344,15 @@ public class UsersController {
                 }
             }
 
+
+
             //entityManager.merge(user);
+
 //            entityManager.refresh(user);
 
 //            entityManager
 //                    .remove(entityManager.contains(user) ? user : entityManager.merge(user));
+
 //            entityManager
 //                    .remove(entityManager.getReference(User.class, user));
 

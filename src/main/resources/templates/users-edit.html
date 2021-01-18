@@ -48,23 +48,24 @@
 
 
 
-            <div class="jumbotron">
-                <h2>Роли пользователя</h2><br>
-                <label class="checkbox-inline disabled"><input type="checkbox" name="userCheckBox" value="" disabled checked> Пользователь  </label>
-                <div th:if="${el.hasRoleProgrammer}">
-                    <label class="checkbox-inline"><input type="checkbox" name="programmerCheckBox" value="" checked> Программист  </label>
-                </div>
-                <div th:if="${!el.hasRoleProgrammer}">
-                    <label class="checkbox-inline"><input type="checkbox" name="programmerCheckBox" value=""> Программист  </label>
-                </div>
-                <div th:if="${el.hasRoleAdministrator}">
-                    <label class="checkbox-inline"><input type="checkbox" name="administratorCheckBox" value="" checked> Администратор  </label>
-                </div>
-                <div th:if="${!el.hasRoleAdministrator}">
-                    <label class="checkbox-inline"><input type="checkbox" name="administratorCheckBox" value=""> Администратор  </label>
+            <div th:if="${iAmAdministrator}">
+                <div class="jumbotron">
+                    <h2>Роли пользователя</h2><br>
+                    <label class="checkbox-inline disabled"><input type="checkbox" name="userCheckBox" value="" disabled checked> Пользователь  </label>
+                    <div th:if="${el.hasRoleProgrammer}">
+                        <label class="checkbox-inline"><input type="checkbox" name="programmerCheckBox" value="" checked> Программист  </label>
+                    </div>
+                    <div th:if="${!el.hasRoleProgrammer}">
+                        <label class="checkbox-inline"><input type="checkbox" name="programmerCheckBox" value=""> Программист  </label>
+                    </div>
+                    <div th:if="${el.hasRoleAdministrator}">
+                        <label class="checkbox-inline"><input type="checkbox" name="administratorCheckBox" value="" checked> Администратор  </label>
+                    </div>
+                    <div th:if="${!el.hasRoleAdministrator}">
+                        <label class="checkbox-inline"><input type="checkbox" name="administratorCheckBox" value=""> Администратор  </label>
+                    </div>
                 </div>
             </div>
-
 
             <div class="jumbotron">
                 <h2>Смена пароля</h2><br>
