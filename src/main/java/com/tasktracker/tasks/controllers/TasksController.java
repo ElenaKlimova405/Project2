@@ -8,14 +8,12 @@ import com.tasktracker.tasks.repo.UserSelectedTheTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.*;
 
 @Controller
@@ -29,13 +27,7 @@ public class TasksController {
 
     @GetMapping("/tasks")
     public String tasksMain(Model model) {
-//        System.out.println(jdbcTemplate);
-//        List<Map<String, Object>> maps = jdbcTemplate.queryForList("Select * from Tasks");
-//        System.out.println(maps);
-
-        //Iterable<Tasks> tasks = tasksRepository.findAll();
         List<Task> parentTasks = taskRepository.findParents();
-        //model.addAttribute("tasks", tasks);
         model.addAttribute("parentTasks", parentTasks);
         return "tasks-main";
     }
@@ -50,9 +42,7 @@ public class TasksController {
                                @RequestParam(required = true) String taskName,
                                @RequestParam(required = false, defaultValue = "") String taskPreview,
                                @RequestParam(required = false, defaultValue = "") String taskDescription,
-                               Model model
-    ) {
-
+                               Model model) {
         PlannedTime plannedTime = new PlannedTime();
         plannedTime.setTimer(new Timer());
         ActualTime actualTime = new ActualTime();
@@ -73,8 +63,7 @@ public class TasksController {
                 plannedTime,
                 actualTime,
                 statuses
-                );
-
+        );
 
         taskRepository.save(task); // сохранение нового объекта
         return "redirect:/tasks/" + task.getTaskId();
@@ -82,35 +71,27 @@ public class TasksController {
 
     @GetMapping("/tasks/{id}")
     public String tasksDetails(@AuthenticationPrincipal User userIn,
-                               @PathVariable(value = "id") long idParam,
+                               @PathVariable(value = "id") long id,
                                Model model) {
-        if (!taskRepository.existsById(idParam)) {
+        if (!taskRepository.existsById(id)) {
             return "redirect:/tasks";
         }
 
-        Task task = taskRepository.findById(idParam).orElseThrow();
-        List<Task> children = null;
+        Task task = taskRepository.findById(id).orElseThrow();
 
         task.incrementViews();
         taskRepository.save(task);
-        //taskRepository.findChildren(task);
 
-        children = task.getChildren();
+        List<Task> children = task.getChildren();
         model.addAttribute("currentTask", task);
         model.addAttribute("children", children);
 
-
-
-
         if (task.getUserSelectedTheTask() == null) {
             model.addAttribute("getTaskButton", "true");
-        } else {
+        } else
             if (userIn.getUsername().equals(task.getUserSelectedTheTask().getUser().getUsername())) {
                 model.addAttribute("cancelTaskButton", "true");
             }
-        }
-
-
 
         if ((task.getAuthor() != null && userIn.getUsername().equals(task.getAuthor().getUser().getUsername())) ||
                 userIn.hasRoleAdministrator()) {
@@ -125,21 +106,20 @@ public class TasksController {
             }
         }
 
-
-
         return "tasks-details";
     }
 
     @GetMapping("/tasks/{id}/edit")
     public String tasksEdit(@AuthenticationPrincipal User userIn,
-                            @PathVariable(value = "id") long idParam,
+                            @PathVariable(value = "id") long id,
                             Model model) {
-        if (!taskRepository.existsById(idParam)) {
-            return "redirect:/tasks/{id}";
+        if (!taskRepository.existsById(id)) {
+            return "redirect:/tasks";
         }
-        Task task = taskRepository.findById(idParam).orElseThrow();
-        if ((userIn.getUsername().equals(task.getAuthor().getUser().getUsername()))
-                || userIn.hasRoleAdministrator()) {
+
+        Task task = taskRepository.findById(id).orElseThrow();
+        if (userIn.getUsername().equals(task.getAuthor().getUser().getUsername()) ||
+                userIn.hasRoleAdministrator()) {
             model.addAttribute("task", task);
         }
 
@@ -163,12 +143,16 @@ public class TasksController {
                                   @RequestParam(required = false, defaultValue = "0") int minutesOfActualTime,
 
                                   Model model) {
+        if (!taskRepository.existsById(id)) {
+            return "redirect:/tasks";
+        }
 
         Task task = taskRepository.findById(id).orElseThrow();
 
         if (userIn.getUsername().equals(task.getAuthor().getUser().getUsername()) || userIn.hasRoleAdministrator()) {
             Timer plannedTimer = new Timer(daysOfPlannedTime, hoursOfPlannedTime, minutesOfPlannedTime);
             Timer actualTimer = new Timer(daysOfActualTime, hoursOfActualTime, minutesOfActualTime);
+
             PlannedTime plannedTime = new PlannedTime();
             plannedTime.setTimer(plannedTimer);
             ActualTime actualTime = new ActualTime();
@@ -190,8 +174,13 @@ public class TasksController {
     public String tasksPostDelete(@AuthenticationPrincipal User userIn,
                                   @PathVariable(value = "id") long id,
                                   Model model) {
+        if (!taskRepository.existsById(id)) {
+            return "redirect:/tasks";
+        }
+
         Task task = taskRepository.findById(id).orElseThrow();
-        if (userIn.getUsername().equals(task.getAuthor().getUser().getUsername()) || userIn.hasRoleAdministrator()) {
+        if (userIn.getUsername().equals(task.getAuthor().getUser().getUsername()) ||
+                userIn.hasRoleAdministrator()) {
             taskRepository.delete(task);
         }
 
@@ -200,6 +189,10 @@ public class TasksController {
 
     @GetMapping("/tasks/{id}/create_subtask")
     public String tasksGetCreateSubtask(@PathVariable(value = "id") long id, Model model) {
+        if (!taskRepository.existsById(id)) {
+            return "redirect:/tasks";
+        }
+
         Task parent = taskRepository.findById(id).orElseThrow();
         model.addAttribute("parent", parent);
         return "tasks-create-subtask";
@@ -215,13 +208,16 @@ public class TasksController {
         if (!taskRepository.existsById(id)) {
             return "redirect:/tasks";
         }
+
         Task parent = taskRepository.findById(id).orElseThrow();
         Author author = new Author();
         author.setUser(userIn);
+
         PlannedTime plannedTime = new PlannedTime();
         plannedTime.setTimer(new Timer());
         ActualTime actualTime = new ActualTime();
         actualTime.setTimer(new Timer());
+
         List<Status> statuses = new ArrayList<>();
         statuses.add(Status.DISTRIBUTED);
 
@@ -239,7 +235,7 @@ public class TasksController {
                 statuses
         );
 
-        taskRepository.save(subtask); // сохранение нового объекта
+        taskRepository.save(subtask);
         return "redirect:/tasks/" + subtask.getTaskId();
     }
 
@@ -248,8 +244,12 @@ public class TasksController {
     public String tasksGetGetTask(@PathVariable(value = "id") long id,
                                   @AuthenticationPrincipal User userIn,
                                   Model model) {
+        if (!taskRepository.existsById(id)) {
+            return "redirect:/tasks";
+        }
 
         Task task = taskRepository.findById(id).orElseThrow();
+
         if (task.getUserSelectedTheTask() == null) {
             UserSelectedTheTask userSelectedTheTask = new UserSelectedTheTask();
             userSelectedTheTask.setUser(userIn);
@@ -261,12 +261,16 @@ public class TasksController {
         return "redirect:/tasks/{id}";
     }
 
-
     @GetMapping("/tasks/{id}/mark_solved")
     public String tasksGetMarkSolved(@PathVariable(value = "id") long id,
                                      @AuthenticationPrincipal User userIn,
                                      Model model) {
+        if (!taskRepository.existsById(id)) {
+            return "redirect:/tasks";
+        }
+
         Task task = taskRepository.findById(id).orElseThrow();
+
         if (task.getUserSelectedTheTask() != null &&
                 userIn.getUsername().equals(task.getUserSelectedTheTask().getUser().getUsername()) ||
                 userIn.hasRoleAdministrator()) {
@@ -282,8 +286,12 @@ public class TasksController {
     public String tasksGetGetTaskCancel(@PathVariable(value = "id") long id,
                                         @AuthenticationPrincipal User userIn,
                                         Model model) {
+        if (!taskRepository.existsById(id)) {
+            return "redirect:/tasks";
+        }
 
         Task task = taskRepository.findById(id).orElseThrow();
+
         if (task.getUserSelectedTheTask() != null &&
                 userIn.getUsername().equals(task.getUserSelectedTheTask().getUser().getUsername()) ||
                 userIn.hasRoleAdministrator()) {
@@ -297,8 +305,6 @@ public class TasksController {
     }
 
 
-
-
     @GetMapping("/tasks/{id}/set_planned_time")
     public String tasksGetSetPlannedTime(@AuthenticationPrincipal User userIn,
                                          @PathVariable(value = "id") long id,
@@ -306,6 +312,7 @@ public class TasksController {
         if (!taskRepository.existsById(id)) {
             return "redirect:/tasks";
         }
+
         Task task = taskRepository.findById(id).orElseThrow();
         model.addAttribute("task", task);
 
@@ -314,11 +321,8 @@ public class TasksController {
             model.addAttribute("iAmAuthor", "true");
         }
 
-
         return "tasks-set-planned-time";
     }
-
-
 
     @PostMapping("/tasks/{id}/set_planned_time")
     public String tasksPostSetPlannedTime(@AuthenticationPrincipal User userIn,
@@ -326,10 +330,11 @@ public class TasksController {
                                           @RequestParam(required = false, defaultValue = "0") int daysOfPlannedTime,
                                           @RequestParam(required = false, defaultValue = "0") int hoursOfPlannedTime,
                                           @RequestParam(required = false, defaultValue = "0") int minutesOfPlannedTime,
-                                         Model model) {
+                                          Model model) {
         if (!taskRepository.existsById(id)) {
             return "redirect:/tasks";
         }
+
         Task task = taskRepository.findById(id).orElseThrow();
         if (userIn.getUsername().equals(task.getAuthor().getUser().getUsername()) || userIn.hasRoleAdministrator()) {
             Timer timer = new Timer(daysOfPlannedTime, hoursOfPlannedTime, minutesOfPlannedTime);
@@ -337,12 +342,11 @@ public class TasksController {
             plannedTime.setTimer(timer);
             task.setPlannedTime(plannedTime);
 
-            taskRepository.save(task); // сохранение нового объекта
+            taskRepository.save(task);
         }
 
         return "redirect:/tasks/" + task.getTaskId();
     }
-
 
     @GetMapping("/tasks/{id}/change_actual_time")
     public String tasksGetChangeActualTime(@AuthenticationPrincipal User userIn,
@@ -351,10 +355,10 @@ public class TasksController {
         if (!taskRepository.existsById(id)) {
             return "redirect:/tasks";
         }
-        Task task = taskRepository.findById(id).orElseThrow();
 
+        Task task = taskRepository.findById(id).orElseThrow();
         if (task.getUserSelectedTheTask() != null) {
-            if (userIn.getUsername().equals(task.getUserSelectedTheTask().getUser().getUsername())  ||
+            if (userIn.getUsername().equals(task.getUserSelectedTheTask().getUser().getUsername()) ||
                     userIn.hasRoleAdministrator()) {
                 model.addAttribute("iSelectedTask", "true");
             }
@@ -364,40 +368,41 @@ public class TasksController {
         return "tasks-change-actual-time";
     }
 
-
-
     @PostMapping("/tasks/{id}/change_actual_time")
     public String tasksPostChangeActualTime(@AuthenticationPrincipal User userIn,
                                             @PathVariable(value = "id") long id,
                                             @RequestParam(required = false, defaultValue = "0") int daysOfActualTime,
                                             @RequestParam(required = false, defaultValue = "0") int hoursOfActualTime,
                                             @RequestParam(required = false, defaultValue = "0") int minutesOfActualTime,
-                                          Model model) {
+                                            Model model) {
         if (!taskRepository.existsById(id)) {
             return "redirect:/tasks";
         }
+
         Task task = taskRepository.findById(id).orElseThrow();
         if (task.getUserSelectedTheTask() != null) {
-            if (userIn.getUsername().equals(task.getUserSelectedTheTask().getUser().getUsername())  ||
+            if (userIn.getUsername().equals(task.getUserSelectedTheTask().getUser().getUsername()) ||
                     userIn.hasRoleAdministrator()) {
                 Timer timer = new Timer(daysOfActualTime, hoursOfActualTime, minutesOfActualTime);
                 ActualTime actualTime = new ActualTime();
                 actualTime.setTimer(timer);
                 task.setActualTime(actualTime);
 
-                taskRepository.save(task); // сохранение нового объекта
+                taskRepository.save(task);
             }
         }
 
         return "redirect:/tasks/" + task.getTaskId();
     }
 
-
-
     @GetMapping("/tasks/{id}/add_actual_time")
     public String tasksGetAddActualTime(@AuthenticationPrincipal User userIn,
                                         @PathVariable(value = "id") long id,
                                         Model model) {
+        if (!taskRepository.existsById(id)) {
+            return "redirect:/tasks";
+        }
+
         Task task = taskRepository.findById(id).orElseThrow();
         if (task.getUserSelectedTheTask() != null) {
             if (userIn.getUsername().equals(task.getUserSelectedTheTask().getUser().getUsername()) ||
@@ -405,6 +410,7 @@ public class TasksController {
                 model.addAttribute("iSelectedTask", "true");
             }
         }
+
         return "tasks-add-actual-time";
     }
 
@@ -413,23 +419,22 @@ public class TasksController {
                                          @PathVariable(value = "id") long id,
                                          @RequestParam(required = false, defaultValue = "0") int hoursOfActualTime,
                                          @RequestParam(required = false, defaultValue = "0") int minutesOfActualTime,
-                                            Model model) {
+                                         Model model) {
         if (!taskRepository.existsById(id)) {
             return "redirect:/tasks";
         }
+
         Task task = taskRepository.findById(id).orElseThrow();
         if (task.getUserSelectedTheTask() != null) {
             if (userIn.getUsername().equals(task.getUserSelectedTheTask().getUser().getUsername()) ||
                     userIn.hasRoleAdministrator()) {
                 task.getActualTime().getTimer().addTime(hoursOfActualTime, minutesOfActualTime);
-                taskRepository.save(task); // сохранение нового объекта
+                taskRepository.save(task);
             }
         }
 
         return "redirect:/tasks/" + task.getTaskId();
     }
-
-
 
     private void goDFS(Task task, Timer plannedTimeSum, Timer actualTimeSum, List<Triple> triples, int number, String item) {
         List<Task> children = taskRepository.findChildren(task);
@@ -437,53 +442,51 @@ public class TasksController {
         if (number != 0) {
             newItem = newItem + number + '.';
         }
+
         Triple triple = new Triple(newItem, task, children.size() > 0 ? false : true);
         triples.add(triple);
 
         if (children.size() == 0) {
             if (task.getActualTime().getTimer().getTimeAsMinutes() > 0 && task.getPlannedTime().getTimer().getTimeAsMinutes() > 0) {
-                plannedTimeSum.addTime(task.getPlannedTime().getTimer().getDays(),task.getPlannedTime().getTimer().getHours(), task.getPlannedTime().getTimer().getMinutes());
+                plannedTimeSum.addTime(task.getPlannedTime().getTimer().getDays(), task.getPlannedTime().getTimer().getHours(), task.getPlannedTime().getTimer().getMinutes());
                 actualTimeSum.addTime(task.getActualTime().getTimer().getDays(), task.getActualTime().getTimer().getHours(), task.getActualTime().getTimer().getMinutes());
             }
         }
 
         for (int i = 0; i < children.size(); i++) {
-            goDFS(children.get(i), plannedTimeSum, actualTimeSum, triples, i+1, newItem);
+            goDFS(children.get(i), plannedTimeSum, actualTimeSum, triples, i + 1, newItem);
         }
     }
 
-
-
-
     @GetMapping("/tasks/{id}/statistics")
     public String tasksGetStatistics(@PathVariable(value = "id") long id,
-                                        Model model) {
+                                     Model model) {
         if (!taskRepository.existsById(id)) {
             return "redirect:/tasks";
         }
+
+        Task task = taskRepository.findById(id).orElseThrow();
+
         Timer plannedTimeSum = new Timer();
         Timer actualTimeSum = new Timer();
         List<Triple> triples = new ArrayList<>();
 
         double plan = 0;
-        Task task = taskRepository.findById(id).orElseThrow();
         goDFS(task, plannedTimeSum, actualTimeSum, triples, 0, "1.");
 
-
         if (plannedTimeSum.getTimeAsMinutes() > 0) {
-            plan = 100.0 * actualTimeSum.getTimeAsMinutes()  / plannedTimeSum.getTimeAsMinutes() ;
+            plan = 100.0 * actualTimeSum.getTimeAsMinutes() / plannedTimeSum.getTimeAsMinutes();
         }
 
         model.addAttribute("triples", triples);
         model.addAttribute("actualTimeSum", actualTimeSum);
         model.addAttribute("plannedTimeSum", plannedTimeSum);
+
         if (plan < 100) {
             model.addAttribute("successAttribute", true);
-        }
-        else {
+        } else {
             model.addAttribute("warningAttribute", true);
         }
-
         model.addAttribute("plan", plan);
 
         return "tasks-statistics";

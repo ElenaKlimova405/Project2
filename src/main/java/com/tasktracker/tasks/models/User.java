@@ -11,17 +11,12 @@ import java.util.Set;
 @Entity
 @Table(name = "usr")
 public class User implements UserDetails {
-//    @Id
-//    @SequenceGenerator(name = "userIdSequenceGen",
-//            sequenceName="userIdSequence", initialValue = 2)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userIdSequenceGen")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
-    //@NonNull
+
     @Column(unique = true)
     private String username;
-    //@NonNull
     private String password;
     private boolean active = true;
 
@@ -32,38 +27,19 @@ public class User implements UserDetails {
 
     private String eMail;
     private String activationCode;
-
-    //@NonNull
     private String firstName;
     private String lastName;
     private String secondName;
     private String aboutMe;
 
 
-
     @OneToMany(mappedBy = "user", orphanRemoval = true)
-    //@JoinColumn(name = "authorId")
     @Column(name = "authorId")
     private List<Author> author;
 
-
     @OneToMany(mappedBy = "user", orphanRemoval = true)
-    //@JoinColumn(name = "userSelectedTheTaskId")
     @Column(name = "userSelectedTheTaskId")
     private List<UserSelectedTheTask> userSelectedTheTask;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public User() {
     }
@@ -197,14 +173,6 @@ public class User implements UserDetails {
         this.userSelectedTheTask = userSelectedTheTask;
     }
 
-
-
-
-
-
-
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.getRoles();
@@ -225,29 +193,23 @@ public class User implements UserDetails {
         return true;
     }
 
-
     @Override
     public boolean isEnabled() {
         return this.isActive();
     }
 
     public boolean equalsdLoginAndPasswordAndRole(User user) {
-        if (
-                user != null &&
+        if (user != null &&
                 this.getUsername().equals(user.getUsername()) &&
-                this.getPassword().equals(user.getPassword())
-        ) {
+                this.getPassword().equals(user.getPassword())) {
             for (Role role : this.getRoles()) {
-                if (
-                        user.getRoles().containsAll(this.getRoles())
-                ) {
+                if (user.getRoles().containsAll(this.getRoles())) {
                     return true;
                 }
             }
         }
         return false;
     }
-
 
     public boolean hasRole(Role role) {
         for (Role role1 : this.getRoles()) {

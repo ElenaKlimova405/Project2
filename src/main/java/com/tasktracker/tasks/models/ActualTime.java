@@ -2,7 +2,6 @@ package com.tasktracker.tasks.models;
 
 import javax.persistence.*;
 
-
 @Entity
 @Table(name = "actualTime")
 public class ActualTime {
@@ -12,7 +11,7 @@ public class ActualTime {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "timerId")
-    private Timer timer;// подробная информация о фактическом времени
+    private Timer timer;
 
     @OneToOne(mappedBy = "actualTime")
     @JoinColumn(name = "taskId")

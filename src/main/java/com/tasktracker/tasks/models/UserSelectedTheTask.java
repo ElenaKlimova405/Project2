@@ -15,8 +15,7 @@ public class UserSelectedTheTask {
 
     @ManyToOne
     @JoinColumn(name = "userId")
-    private User user;// подробная информация о пользователе
-
+    private User user;
 
     public UserSelectedTheTask() {
     }

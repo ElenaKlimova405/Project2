@@ -11,35 +11,28 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.Collections;
-//import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class MainController {
-
     private final UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UsersService usersService;
-
-
     @Autowired
     public MainController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-
     @GetMapping("/")
-    public String home(/*@RequestParam(name="name", required=false, defaultValue="World") String name, */Model model) {
+    public String home(Model model) {
         model.addAttribute("someAttribute", "Сюда можно вставить имя пользователя");
-
         return "home";
     }
 
     @GetMapping("/about")
-    public String about(/*@RequestParam(name="name", required=false, defaultValue="World") String name, */Model model) {
+    public String about(Model model) {
         model.addAttribute("someAttribute", "Сюда можно вставить имя пользователя");
         return "about";
     }
@@ -47,43 +40,22 @@ public class MainController {
     @GetMapping("/login")
     public String login(Model model) {
         model.addAttribute("someAttribute", "Сюда можно вставить имя пользователя");
-//        usersService.checkAdminAccount();
         return "login";
     }
 
-    /* @PostMapping("@{/login}")
-     public String loginPost(@RequestParam(required=true) String username, @RequestParam(required=true) String password, Model model) {
-         if (usersRepository.findByUsername(username) == null) {
-             model.addAttribute("param.error", "Неверный логин или пароль!");
-             return "login";
-         }
-         Users user = usersRepository.findByUsername(username);
-         if (!password.equals(user.getPassword())) {
-             model.addAttribute("param.error", "Неверный логин или пароль!");
-             return "login";
-         }
-
-         user.setActive(true);
-         model.addAttribute("userLogIn", user);
-
-         return "redirect:/";
-     }
- */
     @GetMapping("/registration")
-    public String registration(/*@RequestParam(name="name", required=false, defaultValue="World") String name, */Model model) {
+    public String registration(Model model) {
         model.addAttribute("someAttribute", "Сюда можно вставить имя пользователя");
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String AddUser(/*@RequestParam(name="name", required=false, defaultValue="World") String name,*/
-            @RequestParam(required = true) String username,
-            @RequestParam(required = true) String password,
-            @RequestParam(required = true) String password2,
-            Model model
+    public String AddUser(@RequestParam(required = true) String username,
+                          @RequestParam(required = true) String password,
+                          @RequestParam(required = true) String password2,
+                          Model model
     ) {
         User userFromDb = userRepository.findByUsername(username);
-
         if (userFromDb != null) {
             model.addAttribute("message", "Данный логин уже занят");
             return "registration";
@@ -103,5 +75,4 @@ public class MainController {
 
         return "redirect:/login";
     }
-
 }

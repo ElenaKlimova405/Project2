@@ -11,7 +11,7 @@ public class PlannedTime {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "timerId")
-    private Timer timer;// подробная информация о планируемом времени
+    private Timer timer;
 
     @OneToOne(mappedBy = "plannedTime")
     @JoinColumn(name = "taskId")
@@ -24,7 +24,6 @@ public class PlannedTime {
         this.timer = timer;
         this.task = task;
     }
-
 
     public Long getPlannedTimesId() {
         return plannedTimesId;

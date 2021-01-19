@@ -19,55 +19,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UsersService userSevice;
 
-    @Autowired
-    private /*static*/ PasswordEncoder passwordEncoder;
-
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder(8);
     }
 
-    /*public static PasswordEncoder getCurrentPasswordEncoder() {
-        return passwordEncoder;
-    }*/
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/about", "/registration").permitAll()  // разешаем этим пользоваться всем
-
-
-                .antMatchers("/tasks").access("hasAuthority('USER')")
-                .antMatchers("/tasks/**").access("hasAuthority('USER')")
-                /*.antMatchers("/tasks/{id}").access("hasAuthority('USER')")
-                .antMatchers("/tasks/{id}/edit").access("hasAuthority('USER')")
-                .antMatchers("/tasks/{id}/remove").access("hasAuthority('USER')")*/
-
-
-//                .antMatchers("/users/add").access("hasAuthority('ADMINISTRATOR')")
-                .antMatchers("/users").access("hasAuthority('USER')")
-                .antMatchers("/users/**").access("hasAuthority('USER')")
-
-                /*.antMatchers("/users/{id}/edit").access("hasAuthority('USER')")
-                .antMatchers("/users/{id}/remove").access("hasAuthority('USER')")*/
-
-                .anyRequest().authenticated() // а на другие запросы нужна регистрация
+                .antMatchers("/", "/about", "/registration").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .permitAll() // разешаем этим пользоваться всем
+                .permitAll()
                 .and()
                 .logout()
-                .permitAll(); // разешаем этим пользоваться всем
+                .permitAll();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userSevice)
-                .passwordEncoder(passwordEncoder/*NoOpPasswordEncoder.getInstance()*/);
+                .passwordEncoder(getPasswordEncoder());
     }
-
-
-
 }

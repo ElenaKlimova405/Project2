@@ -1,18 +1,14 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <!--    <title>Getting Started: Serving Web Content</title>-->
     <title th:text="'TASK TRACKER - Список пользователей'"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
-
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 </head>
-
 
 <body>
 <header th:insert="blocks/header :: header">
@@ -22,11 +18,6 @@
 <header th:insert="blocks/notifications :: notifications">
 </header>
 
-
-
-
-
-
 <div class="container mt-5">
     <h1>Список пользователей</h1>
     <div th:each="elem : ${users}" class="alert alert-info mt-2">
@@ -34,15 +25,11 @@
         <h3 th:text="${elem.getFirstName} + ' ' + ${elem.getLastName} + ' ' + ${elem.getSecondName}"/>
         <h4 th:text="${elem.getEMail}"/>
         <br><a th:href="'/users/' + ${elem.userId}" class="btn btn-info">Подробнее</a>
-        <!--        <a th:href="'/users/1'" class="btn btn-warning">Посмотреть детальнее...</a>-->
     </div>
 </div>
 
-
 <div th:insert="blocks/footer :: footer">
-
 </div>
-
 
 </body>
 </html>

@@ -1,12 +1,9 @@
 package com.tasktracker.tasks.models;
 
 import org.springframework.lang.NonNull;
-
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "task")
@@ -14,6 +11,7 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long taskId;
+
     @NonNull
     private String taskName;
     private String taskPreview;
@@ -21,54 +19,33 @@ public class Task {
     private Long views = 0L;
 
     @ManyToOne
-    /*@JsonIgnore*/
     @JoinColumn(name = "parentTaskId")
     private Task parentTask;
 
     @OneToMany(mappedBy = "parentTask", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JoinColumn(name = "childId")
     @Column(name = "childId")
     private List<Task> children;
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "authorId")
-//    //@NonNull
-//    /*@JsonIgnore*/
-//    private Users author;
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "userSelectedTheTaskId")
-//    /*@JsonIgnore*/
-//    private Users userSelectedTheTask;
-
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "authorId")
     private Author author;
 
-
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "userSelectedTheTaskId")
     private UserSelectedTheTask userSelectedTheTask;
-
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "plannedTimeId")
     private PlannedTime plannedTime;
 
-
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "actualTimeId")
     private ActualTime actualTime;
-
-
-
-
 
     @ElementCollection(targetClass = Status.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "taskStatus", joinColumns = @JoinColumn(name = "taskId"))
     @Enumerated(EnumType.STRING)
     private List<Status> status;
-
-
 
     public Task() {
     }
@@ -90,9 +67,6 @@ public class Task {
     public void incrementViews() {
         this.views++;
     }
-
-
-
 
     public Long getTaskId() {
         return taskId;
@@ -185,14 +159,6 @@ public class Task {
     public void setStatuses(List<Status> status) {
         this.status = status;
     }
-
-
-
-
-
-
-
-
 
     public Status getStatus() {
         for (Status status : this.status) {

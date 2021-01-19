@@ -15,12 +15,11 @@ public class Timer {
 
     @OneToOne(mappedBy = "timer")
     @JoinColumn(name = "plannedTimesId")
-    private PlannedTime plannedTime;// подробная информация о планируемом времени
-
+    private PlannedTime plannedTime;
 
     @OneToOne(mappedBy = "timer")
     @JoinColumn(name = "actualTimesId")
-    private ActualTime actualTime;// подробная информация о фактическом времени
+    private ActualTime actualTime;
 
     public Timer() {
     }
